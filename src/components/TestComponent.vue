@@ -1,17 +1,13 @@
 <template>
   <div>
-    <h1>Hello World</h1>
+    <h1>Testowy komponent</h1>
   </div>
 </template>
 
 <script>
-export default {
-  data() {
-    return {
-      name: 'HelloWorld'
-    }
+  export default {
+    name: 'Test',
   }
-}
 </script>
 
 <style lang="scss" scoped>
