@@ -1,23 +1,20 @@
 <template>
   <div>
-    <h1>DEVICES READY TO USE:</h1>
-    <!-- <ul>
+    <h2>{{ msg }}</h2>
+    <ul>
       <li v-for="user in users" :key="user.userID">
         {{ user.name }} ({{ user.login }})
       </li>
-    </ul> -->
+    </ul>
   </div>
 </template>
 
 <script>
 export default {
   name: 'DevicesList',
-  data() {
-    return {
-      props: {
-        users: Array,
-      }
-    }
+  props: {
+    users: Array,
+    msg: String,
   }
 }
 </script>
