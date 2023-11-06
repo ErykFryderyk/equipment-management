@@ -58,7 +58,7 @@
       <form @submit.prevent="addPrinter">
         <div>
           <label for="printerName">Printer Name:</label>
-          <input type="text" id="printerName" placeholder="KON1S001" v-model="newPrinter.printerName" />
+          <input type="text" id="printerName" placeholder="KON1L001" v-model="newPrinter.printerName" />
         </div>
         <div>
           <label for="model">Model:</label>
@@ -293,16 +293,16 @@ export default {
         alert("Wybierz model drukarki")
       } else {
         // Dodaj nowego użytkownika do tablicy users
-        this.printer.push({
-          printerID: Math.random() * 10,
-          printerName: this.newPrinter.scannerName,
+        this.printers.push({
+          printerID: Math.random(),
+          printerName: this.newPrinter.printerName,
           isInUse: 'Nie',
           model: this.newPrinter.model,
           serialNumber: this.newPrinter.serialNumber,
           startDate: Date(),
         });
         // Zresetuj dane formularza
-        this.newPrinter.scannerName = '';
+        this.newPrinter.printerName = '';
         this.newPrinter.model = '';
         this.newPrinter.serialNumber = '';
       }
