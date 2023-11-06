@@ -2,6 +2,7 @@
   <div class="app-container">
     <h1>Warehouse Manager</h1>
     <div class="lists">
+      <!-- DODAWANIE NOWEGO UŻYTKOWNIKA -->
       <h2>Dodaj nowego użytkownika</h2>
       <form @submit.prevent="addUser">
         <div>
@@ -15,6 +16,7 @@
         <button type="submit">Dodaj użytkownika</button>
       </form>
     </div>
+    <!-- USUWANIE UŻYTKOWNIKA  -->
     <div class="lists">
       <h2>Usuń użytkownika</h2>
       <form @submit.prevent="removeUserByLogin">
@@ -26,6 +28,54 @@
       </form>
     </div>
     <div class="lists">
+      <!-- DODAWANIE SKANERA DO BAZY -->
+      <h2>Dodaj skaner</h2>
+      <form @submit.prevent="addScanner">
+        <div>
+          <label for="scannerName">Scanner Name:</label>
+          <input type="text" id="scannerName" placeholder="KON1S001" v-model="newScanner.scannerName" />
+        </div>
+        <div>
+          <label for="model">Model:</label>
+          <select id="model" v-model="newScanner.model">
+            <option value="">--brak--</option>
+            <option value="TC52">TC52</option>
+            <option value="MC33">MC33</option>
+            <option value="MC55">MC55</option>
+            <option value="MC67">MC67</option>
+          </select>
+        </div>
+        <div>
+          <label for="scannerSerialNumber">Serial Number:</label>
+          <input type="text" id="scannerSerialNumber" placeholder="S7265638782641" v-model="newScanner.serialNumber" />
+        </div>
+        <button type="submit">Dodaj skaner</button>
+      </form>
+    </div>
+    <div class="lists">
+      <!-- DODAWANIE DRUKARKI DO BAZY -->
+      <h2>Dodaj drukarkę</h2>
+      <form @submit.prevent="addPrinter">
+        <div>
+          <label for="printerName">Printer Name:</label>
+          <input type="text" id="printerName" placeholder="KON1S001" v-model="newPrinter.printerName" />
+        </div>
+        <div>
+          <label for="model">Model:</label>
+          <select id="model" v-model="newPrinter.model">
+            <option value="QLn620">QLn620</option>
+            <option value="QLn230">QLn230</option>
+          </select>
+        </div>
+        <div>
+          <label for="printerSerialNumber">Serial Number:</label>
+          <input type="text" id="printerSerialNumber" v-model="newPrinter.serialNumber" />
+        </div>
+        <button type="submit">Dodaj skaner</button>
+      </form>
+    </div>
+    <div class="lists">
+      <!-- WYDAWANIE SPRZĘTU -->
       <h2>Wydawanie urządzeń</h2>
       <form @submit.prevent="assignDevices">
         <input type="text" v-model="userLogin" placeholder="login uzytkownika">
@@ -35,6 +85,7 @@
       </form>
     </div>
     <div class="lists">
+      <!-- ZDAWANIE SPRZĘTU -->
       <h2>Zdawanie urządzeń</h2>
       <form @submit.prevent="returnDevices">
         <input type="text" placeholder="login uzytkownika">
@@ -45,6 +96,7 @@
     </div>
     <div class="main-list">
       <div class="lists">
+        <!-- LISTA Z UŻYTKOWIKAMI KTÓRZY MAJĄ JUZ PRZYSPISANE URZĄDZENIA -->
         <h2>Przypisane urządzenia</h2>
         <h3 v-if="userWithDevices > 0">--brak--</h3>
         <ul>
@@ -110,6 +162,16 @@ export default {
       newUser: {
         login: '',
         name: '',
+      },
+      newScanner: {
+        scannerName: '',
+        model: '',
+        serialNumber: '',
+      },
+      newPrinter: {
+        printerName: '',
+        model: '',
+        serialNumber: '',
       },
       existingUser: '',
       users: [
@@ -195,8 +257,6 @@ export default {
         name: this.newUser.name,
       });
 
-      console.log(this.users);
-
       // Zresetuj dane formularza
       this.newUser.login = '';
       this.newUser.name = '';
@@ -207,6 +267,44 @@ export default {
         this.users.splice(index, 1);
       } else {
         alert('Użytkownik o podanym loginie nie istnieje.');
+      }
+    },
+    addScanner() {
+      if (this.newScanner.model === '') {
+        alert("Wybierz model skanera")
+      } else {
+        // Dodaj nowego użytkownika do tablicy users
+        this.scanners.push({
+          printerID: Math.random() * 10,
+          printerName: this.newScanner.scannerName,
+          isInUse: 'Nie',
+          model: this.newScanner.model,
+          serialNumber: this.newScanner.serialNumber,
+          startDate: Date(),
+        });
+        // Zresetuj dane formularza
+        this.newScanner.scannerName = '';
+        this.newScanner.model = '';
+        this.newScanner.serialNumber = '';
+      }
+    },
+    addPrinter() {
+      if (this.newPrinter.model === '') {
+        alert("Wybierz model drukarki")
+      } else {
+        // Dodaj nowego użytkownika do tablicy users
+        this.printer.push({
+          printerID: Math.random() * 10,
+          printerName: this.newPrinter.scannerName,
+          isInUse: 'Nie',
+          model: this.newPrinter.model,
+          serialNumber: this.newPrinter.serialNumber,
+          startDate: Date(),
+        });
+        // Zresetuj dane formularza
+        this.newPrinter.scannerName = '';
+        this.newPrinter.model = '';
+        this.newPrinter.serialNumber = '';
       }
     },
     assignDevices() {
