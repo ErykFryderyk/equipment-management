@@ -1,5 +1,6 @@
 <template>
   <div class="app-container">
+    <OverlayForModal v-show="modalIsActive"/>
     <h1>Warehouse Manager</h1>
     <div class="lists">
       <!-- DODAWANIE NOWEGO UŻYTKOWNIKA -->
@@ -141,9 +142,11 @@
 
 <script>
 import DevicesList from '@/components/DevicesList.vue';
+import OverlayForModal from '@/components/OverlayForModal.vue';
 
 export default {
   components: {
+    OverlayForModal,
     DevicesList,
   },
   data() {
@@ -151,6 +154,7 @@ export default {
       userLogin: '', // Pole formularza - login użytkownika
       selectedScanner: null, // Pole formularza - wybrany skaner
       selectedPrinter: null, // Pole formularza - wybrana drukarka
+      modalIsActive: false,
 
       usersWithDevices: [
         // {
@@ -277,7 +281,7 @@ export default {
         this.scanners.push({
           printerID: Math.random() * 10,
           printerName: this.newScanner.scannerName,
-          isInUse: 'Nie',
+          isInUse: false,
           model: this.newScanner.model,
           serialNumber: this.newScanner.serialNumber,
           startDate: Date(),
@@ -296,7 +300,7 @@ export default {
         this.printers.push({
           printerID: Math.random(),
           printerName: this.newPrinter.printerName,
-          isInUse: 'Nie',
+          isInUse: false,
           model: this.newPrinter.model,
           serialNumber: this.newPrinter.serialNumber,
           startDate: Date(),
