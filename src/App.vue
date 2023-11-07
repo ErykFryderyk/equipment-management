@@ -25,7 +25,7 @@
           <label for="login">Login:</label>
           <input type="text" id="login" v-model="existingUser" />
         </div>
-        <button type="submit">Dodaj użytkownika</button>
+        <button type="submit">Usuń użytkownika</button>
       </form>
     </div>
     <div class="lists">
@@ -34,7 +34,7 @@
       <form @submit.prevent="addScanner">
         <div>
           <label for="scannerName">Scanner Name:</label>
-          <input type="text" id="scannerName" placeholder="KON1S001" v-model="newScanner.scannerName" />
+          <input type="text" id="scannerName" maxlength="8" placeholder="KON1S001" v-model="newScanner.scannerName" />
         </div>
         <div>
           <label for="model">Model:</label>
@@ -64,13 +64,15 @@
         <div>
           <label for="model">Model:</label>
           <select id="model" v-model="newPrinter.model">
+            <option value="">--brak--</option>
             <option value="QLn620">QLn620</option>
-            <option value="QLn230">QLn230</option>
+            <option value="QLn220">QLn220</option>
+            <option value="ZQ630">ZQ630</option>
           </select>
         </div>
         <div>
           <label for="printerSerialNumber">Serial Number:</label>
-          <input type="text" id="printerSerialNumber" v-model="newPrinter.serialNumber" />
+          <input type="text" id="printerSerialNumber" placeholder="S1203120312031" v-model="newPrinter.serialNumber" />
         </div>
         <button type="submit">Dodaj skaner</button>
       </form>
@@ -118,9 +120,10 @@
           <li v-for="scanner in scanners" :key="scanner.scannerID">
             <b>Scanner ID:</b> {{ scanner.scannerID }}<br>
             <b>Scanner Name:</b> {{ scanner.scannerName }}<br>
-            <b>Is In Use:</b> {{ scanner.isInUse ? 'Tak' : 'Nie' }}<br>
+            <b>W uzyciu:</b> {{ scanner.isInUse ? 'Tak' : 'Nie' }}<br>
             <b>Model:</b> {{ scanner.model }}<br>
-            <b>Serial Number:</b> {{ scanner.serialNumber }}
+            <b>Serial Number:</b> {{ scanner.serialNumber }}<br>
+            <b>Ostatnio uzywany:</b> {{ scanner.recentlyActive }}
           </li>
         </ul>
       </div>
@@ -130,9 +133,10 @@
           <li v-for="printer in printers" :key="printer.printerID">
             <b>Printer ID:</b> {{ printer.printerID }}<br>
             <b>Printer Name:</b> {{ printer.printerName }}<br>
-            <b>Is In Use:</b> {{ printer.isInUse ? 'Tak' : 'Nie' }}<br>
+            <b>W uzyciu:</b> {{ printer.isInUse ? 'Tak' : 'Nie' }}<br>
             <b>Model:</b> {{ printer.model }}<br>
-            <b>Serial Number:</b> {{ printer.serialNumber }}
+            <b>Serial Number:</b> {{ printer.serialNumber }}<br>
+            <b>Ostatnio uzywany:</b> {{ printer.recentlyActive }}
           </li>
         </ul>
       </div>
@@ -155,6 +159,7 @@ export default {
       selectedScanner: null, // Pole formularza - wybrany skaner
       selectedPrinter: null, // Pole formularza - wybrana drukarka
       modalIsActive: false,
+      existingUser: '',
 
       usersWithDevices: [
         // {
@@ -177,7 +182,6 @@ export default {
         model: '',
         serialNumber: '',
       },
-      existingUser: '',
       users: [
         {
           userID: 1,
@@ -203,24 +207,19 @@ export default {
       scanners: [
         {
           scannerID: 1,
+          scannerName: 'KON1S001',
+          isInUse: false,
+          model: 'TC52',
+          serialNumber: 'S129281239123',
+          recentlyActive: '10-10-2023',
+        },
+        {
+          scannerID: 2,
           scannerName: 'KON1S002',
           isInUse: false,
           model: 'TC52',
           serialNumber: 'S129281239123',
-        },
-        {
-          scannerID: 2,
-          scannerName: 'KON1S003',
-          isInUse: false,
-          model: 'TC52',
-          serialNumber: 'S129281239123',
-        },
-        {
-          scannerID: 3,
-          scannerName: 'KON1S003',
-          isInUse: false,
-          model: 'TC52',
-          serialNumber: 'S129281239123',
+          recentlyActive: '10-10-2023',
         },
       ],
       printers: [
@@ -230,27 +229,22 @@ export default {
           isInUse: false,
           model: 'QLn620',
           serialNumber: '123123123',
+          recentlyActive: '10-10-2023',
         },
         {
-          printerID: 1,
-          printerName: 'KON1L001',
+          printerID: 2,
+          printerName: 'KON1L002',
           isInUse: false,
           model: 'QLn620',
           serialNumber: '123123123',
-        },
-        {
-          printerID: 1,
-          printerName: 'KON1L001',
-          isInUse: false,
-          model: 'QLn620',
-          serialNumber: '123123123',
+          recentlyActive: '10-10-2023',
         },
       ]
     }
   },
   methods: {
     addUser() {
-      // Wygeneruj nowy unikalny userID
+      // Generowanie unikalnego userID
       const maxUserID = Math.max(...this.users.map(user => user.userID));
       const newUserID = maxUserID + 1;
 
@@ -274,38 +268,48 @@ export default {
       }
     },
     addScanner() {
+      // Generowanie unikalnego userID
+      const maxID = Math.max(...this.scanners.map(user => user.scannerID));
+      const newID = maxID + 1;
+
+      // Walidacja formularza
       if (this.newScanner.model === '') {
         alert("Wybierz model skanera")
       } else {
-        // Dodaj nowego użytkownika do tablicy users
+        // Dodajwanie skanera do tablicy
         this.scanners.push({
-          printerID: Math.random() * 10,
-          printerName: this.newScanner.scannerName,
+          scannerID: newID,
+          scannerName: this.newScanner.scannerName,
           isInUse: false,
           model: this.newScanner.model,
           serialNumber: this.newScanner.serialNumber,
-          startDate: Date(),
+          recentlyActive: new Date(),
         });
-        // Zresetuj dane formularza
+        // Resetowanie danych z formularza
         this.newScanner.scannerName = '';
         this.newScanner.model = '';
         this.newScanner.serialNumber = '';
       }
     },
     addPrinter() {
+      // Generowanie unikalnego userID
+      const maxID = Math.max(...this.printers.map(user => user.printerID));
+      const newID = maxID + 1;
+
+      //Walidacja formuarza
       if (this.newPrinter.model === '') {
         alert("Wybierz model drukarki")
       } else {
-        // Dodaj nowego użytkownika do tablicy users
+        // Dodawanie obiektu do tablicy
         this.printers.push({
-          printerID: Math.random(),
+          printerID: newID,
           printerName: this.newPrinter.printerName,
           isInUse: false,
           model: this.newPrinter.model,
           serialNumber: this.newPrinter.serialNumber,
-          startDate: Date(),
+          recentlyActive: new Date(),
         });
-        // Zresetuj dane formularza
+        // Resetowanie danych z formularza
         this.newPrinter.printerName = '';
         this.newPrinter.model = '';
         this.newPrinter.serialNumber = '';
@@ -314,7 +318,8 @@ export default {
     assignDevices() {
       // Znajdź użytkownika na podstawie loginu
       const user = this.users.find((u) => u.login === this.userLogin);
-      // const scanner = this.skanners.find((u) => u.scanner === this.scannerName);
+      const scanner = this.scanners.find((u) => u.scanner === this.scannerName);
+      const printer = this.printers.find((u) => u.printer === this.printerName);
 
       // this.isScannerNameExists();
 
@@ -328,7 +333,10 @@ export default {
         const index = this.usersWithDevices.findIndex((u) => u.login === user.login);
         if (index !== -1) {
           // Jeśli użytkownik jest już w tablicy, zaktualizuj go
-          this.usersWithDevices[index] = newUser;
+          // this.usersWithDevices[index] = newUser;
+
+          alert('Ten uzytkownik ma juz przypisane urzadzenia');
+          return
         } else {
           // Jeśli użytkownik nie istnieje w tablicy, dodaj go
           this.usersWithDevices.push(newUser);
