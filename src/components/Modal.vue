@@ -1,29 +1,43 @@
 <template>
   <div class="overlay" @click="someEvent">
     <div class="modal">
-      <button @click="showComponent('addNewScanner')">Pokaż Komponent 1</button>
-      <button @click="showComponent('addNewPrinter')">Pokaż Komponent 2</button>
+      <!-- <button @click="showComponent('addNewScanner')">Pokaż Komponent 1</button> -->
+      <!-- <button @click="showComponent('addNewPrinter')">Pokaż Komponent 2</button> -->
 
       <!-- Wyświetlanie odpowiedniego komponentu w zależności od aktualnego stanu -->
-      <component :is="currentComponent" />
+      <component :is="component" />
     </div>
   </div>
 </template>
 
 <script>
-import addNewScanner from './addNewScanner.vue'
-import addNewPrinter from './addNewPrinter.vue'
+import AddNewScanner from './AddNewScanner.vue'
+import AddNewPrinter from './AddNewPrinter.vue'
+import AddNewUser from './AddNewUser.vue'
+import RemoveUser from './RemoveUser.vue'
+import AssignDevice from './AssignDevice.vue'
+import ReturnDevice from './ReturnDevice.vue'
 
 export default {
   name: 'Modal',
   components: {
-    addNewScanner,
-    addNewPrinter,
+    AddNewScanner,
+    AddNewPrinter,
+    AddNewUser,
+    RemoveUser,
+    AssignDevice,
+    ReturnDevice,
   },
   data() {
     return {
       currentComponent: null,
     };
+  },
+  props: {
+    component: {
+      type: Object,
+      required: true,
+    },
   },
   methods: {
     someEvent(event) {
