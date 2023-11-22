@@ -1,7 +1,18 @@
 <template>
   <div class="app-container">
-    <OverlayForModal v-show="modalIsActive"/>
+    <Modal 
+      v-show="isModalActive" 
+      @pass-event="toggleModal" 
+      :component="currentComponent"
+    />
     <h1>Warehouse Manager</h1>
+    <button @click="toggleModal">Show Modal</button>
+    <button @click="toggleModal('AddNewScanner')">Dodaj skaner</button>
+    <button @click="toggleModal('AddNewPrinter')">Dodaj drukarkę</button>
+    <button @click="toggleModal('AddNewUser')">Dodaj uzytkownika</button>
+    <button @click="toggleModal('RemoveUser')">Usuń uzytkownika</button>
+    <button @click="toggleModal('AssignDevice')">Wydawanie urządzeń</button>
+    <button @click="toggleModal('ReturnDevice')">Zdawanie urządzeń</button>
     <div class="lists">
       <!-- DODAWANIE NOWEGO UŻYTKOWNIKA -->
       <h2>Dodaj nowego użytkownika</h2>
@@ -17,8 +28,8 @@
         <button type="submit">Dodaj użytkownika</button>
       </form>
     </div>
-    <!-- USUWANIE UŻYTKOWNIKA  -->
     <div class="lists">
+      <!-- USUWANIE UŻYTKOWNIKA  -->
       <h2>Usuń użytkownika</h2>
       <form @submit.prevent="removeUserByLogin">
         <div>
@@ -146,11 +157,11 @@
 
 <script>
 import DevicesList from '@/components/DevicesList.vue';
-import OverlayForModal from '@/components/OverlayForModal.vue';
+import Modal from '@/components/Modal.vue';
 
 export default {
   components: {
-    OverlayForModal,
+    Modal,
     DevicesList,
   },
   data() {
@@ -158,8 +169,9 @@ export default {
       userLogin: '', // Pole formularza - login użytkownika
       selectedScanner: null, // Pole formularza - wybrany skaner
       selectedPrinter: null, // Pole formularza - wybrana drukarka
-      modalIsActive: false,
+      isModalActive: false,
       existingUser: '',
+      currentComponent: null, // Przechowuje aktualny widoczny komponent
 
       usersWithDevices: [
         // {
@@ -365,6 +377,10 @@ export default {
     isScannerNameExists(scannerName) {
       return this.scanners.some(scanner => scanner.scannerName === scannerName);
     },
+    toggleModal(componentName){
+      this.isModalActive = !this.isModalActive;
+      this.currentComponent = componentName;
+    }
   }
 }
 </script>
