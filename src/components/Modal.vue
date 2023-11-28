@@ -5,7 +5,7 @@
       <!-- <button @click="showComponent('addNewPrinter')">Pokaż Komponent 2</button> -->
 
       <!-- Wyświetlanie odpowiedniego komponentu w zależności od aktualnego stanu -->
-      <component :is="component" />
+      <component :is="component" @updateData="handleUpdateData"/>
     </div>
   </div>
 </template>
@@ -48,6 +48,11 @@ export default {
       } else {
         return;
       }
+    },
+    handleUpdateData(data) {
+      // Otrzymujemy dane z AddNewUser i przekazujemy do komponentu rodzica
+      this.$emit('updateData', data);
+      this.$emit('passEvent');
     },
     showComponent(componentName) {
       // Ustawia aktualny komponent na ten, który ma być widoczny
