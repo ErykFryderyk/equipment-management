@@ -5,7 +5,15 @@
       <!-- <button @click="showComponent('addNewPrinter')">Pokaż Komponent 2</button> -->
 
       <!-- Wyświetlanie odpowiedniego komponentu w zależności od aktualnego stanu -->
-      <component :is="component" @updateData="handleUpdateData"/>
+      <component 
+        :is="component" 
+        @updateData="handleUpdateData" 
+        @addNewScanner="handleUpdateScanner"
+        @addNewPrinter="handleUpdatePrinter"
+        @removeUser="handleUpdateUsers"
+        @assignDevices="handleUpdateDevicesToAssign"
+        @returnDevices="handleUpdateDevicesToReturn"
+      />
     </div>
   </div>
 </template>
@@ -52,6 +60,30 @@ export default {
     handleUpdateData(data) {
       // Otrzymujemy dane z AddNewUser i przekazujemy do komponentu rodzica
       this.$emit('updateData', data);
+      this.$emit('passEvent');
+    },
+    handleUpdateScanner(data) {
+      this.$emit('updateScanner', data);
+      this.$emit('passEvent');
+    },
+    handleUpdatePrinter(data) {
+      this.$emit('updatePrinter', data);
+      this.$emit('passEvent');
+    },
+    handleUpdateUsers(data) {
+      this.$emit('updateUsersList', data);
+      this.$emit('passEvent');
+    },
+    handleUpdateUsers(data) {
+      this.$emit('updateUsersList', data);
+      this.$emit('passEvent');
+    },
+    handleUpdateDevicesToAssign(data){
+      this.$emit('assignDevicesToUser', data);
+      this.$emit('passEvent');
+    },
+    handleUpdateDevicesToReturn(data){
+      this.$emit('returnDevices', data);
       this.$emit('passEvent');
     },
     showComponent(componentName) {
