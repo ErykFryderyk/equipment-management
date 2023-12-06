@@ -3,7 +3,13 @@
     <Modal 
       v-show="isModalActive" 
       @pass-event="toggleModal" 
-      :component="currentComponent"
+      :component="currentComponent" 
+      @updateData="handleUpdateData"
+      @updateScanner="handleUpdateScanner"
+      @updatePrinter="handleUpdatePrinter"
+      @updateUsersList="handleUpdateUsers"
+      @assignDevicesToUser="handleUpdateAssignedDevices"
+      @returnDevices="returnDevices"
     />
     <h1>Warehouse Manager</h1>
     <button @click="toggleModal">Show Modal</button>
@@ -101,7 +107,7 @@
     <div class="lists">
       <!-- ZDAWANIE SPRZĘTU -->
       <h2>Zdawanie urządzeń</h2>
-      <form @submit.prevent="returnDevices">
+      <form @submit.prevent="returnDevices('G')">
         <input type="text" placeholder="login uzytkownika">
         <input type="text" placeholder="Skaner">
         <input type="text" placeholder="Drukarka">
@@ -166,7 +172,7 @@ export default {
   },
   data() {
     return {
-      userLogin: '', // Pole formularza - login użytkownika
+      userLogin: null, // Pole formularza - login użytkownika
       selectedScanner: null, // Pole formularza - wybrany skaner
       selectedPrinter: null, // Pole formularza - wybrana drukarka
       isModalActive: false,
@@ -174,15 +180,16 @@ export default {
       currentComponent: null, // Przechowuje aktualny widoczny komponent
 
       usersWithDevices: [
-        // {
-        //   userLogin: '',
-        //   assignedScanner: null,
-        //   assignedPrinter: null,
-        // }
+        {
+          login: 'G',
+          assignedScanner: 'KON1S111',
+          assignedPrinter: 'KON1L111',
+        }
       ],
+      //Data to add/remove 
       newUser: {
-        login: '',
-        name: '',
+        login: null,
+        name: null,
       },
       newScanner: {
         scannerName: '',
@@ -255,6 +262,32 @@ export default {
     }
   },
   methods: {
+    handleUpdateData(data) {
+      // Obsługa zdarzenia updateData z Modal, odbieramy dane
+      this.newUser = data;
+      this.addUser();
+    },
+    handleUpdateScanner(data) {
+      // Obsługa zdarzenia updateData z Modal, odbieramy dane
+      this.newScanner = data;
+      this.addScanner();
+    },
+    handleUpdatePrinter(data) {
+      // Obsługa zdarzenia updateData z Modal, odbieramy dane
+      this.newPrinter = data;
+      this.addPrinter();
+    },
+    handleUpdateUsers(data) {
+      // Obsługa zdarzenia updateUsers z Modal, odbieramy dane
+      this.existingUser = data;
+      this.removeUserByLogin();
+    },
+    handleUpdateAssignedDevices(data){
+      this.userLogin = data.userLogin;
+      this.selectedScanner = data.selectedScanner;
+      this.selectedPrinter = data.selectedPrinter;
+      this.assignDevices();
+    },
     addUser() {
       // Generowanie unikalnego userID
       const maxUserID = Math.max(...this.users.map(user => user.userID));
@@ -363,13 +396,14 @@ export default {
       }
       console.log(this.usersWithDevices);
     },
-    returnDevice(user) {
+    returnDevices(data) {
       // Znajdź indeks użytkownika w tablicy usersWithDevices
-      const index = this.usersWithDevices.findIndex(u => u === user);
+      const index = this.usersWithDevices.findIndex((u) => u.login === data);
 
       if (index !== -1) {
         // Usuń użytkownika z tablicy
         this.usersWithDevices.splice(index, 1);
+        index = '';
       } else {
         alert('Użytkownik nie istnieje w tablicy usersWithDevices.');
       }
