@@ -12,108 +12,12 @@
       @returnDevices="returnDevices"
     />
     <h1>Warehouse Manager</h1>
-    <button @click="toggleModal">Show Modal</button>
     <button @click="toggleModal('AddNewScanner')">Dodaj skaner</button>
     <button @click="toggleModal('AddNewPrinter')">Dodaj drukarkę</button>
     <button @click="toggleModal('AddNewUser')">Dodaj uzytkownika</button>
     <button @click="toggleModal('RemoveUser')">Usuń uzytkownika</button>
     <button @click="toggleModal('AssignDevice')">Wydawanie urządzeń</button>
     <button @click="toggleModal('ReturnDevice')">Zdawanie urządzeń</button>
-    <div class="lists">
-      <!-- DODAWANIE NOWEGO UŻYTKOWNIKA -->
-      <h2>Dodaj nowego użytkownika</h2>
-      <form @submit.prevent="addUser">
-        <div>
-          <label for="login">Login:</label>
-          <input type="text" id="login" v-model="newUser.login" />
-        </div>
-        <div>
-          <label for="name">Imię i nazwisko:</label>
-          <input type="text" id="name" v-model="newUser.name" />
-        </div>
-        <button type="submit">Dodaj użytkownika</button>
-      </form>
-    </div>
-    <div class="lists">
-      <!-- USUWANIE UŻYTKOWNIKA  -->
-      <h2>Usuń użytkownika</h2>
-      <form @submit.prevent="removeUserByLogin">
-        <div>
-          <label for="login">Login:</label>
-          <input type="text" id="login" v-model="existingUser" />
-        </div>
-        <button type="submit">Usuń użytkownika</button>
-      </form>
-    </div>
-    <div class="lists">
-      <!-- DODAWANIE SKANERA DO BAZY -->
-      <h2>Dodaj skaner</h2>
-      <form @submit.prevent="addScanner">
-        <div>
-          <label for="scannerName">Scanner Name:</label>
-          <input type="text" id="scannerName" maxlength="8" placeholder="KON1S001" v-model="newScanner.scannerName" />
-        </div>
-        <div>
-          <label for="model">Model:</label>
-          <select id="model" v-model="newScanner.model">
-            <option value="">--brak--</option>
-            <option value="TC52">TC52</option>
-            <option value="MC33">MC33</option>
-            <option value="MC55">MC55</option>
-            <option value="MC67">MC67</option>
-          </select>
-        </div>
-        <div>
-          <label for="scannerSerialNumber">Serial Number:</label>
-          <input type="text" id="scannerSerialNumber" placeholder="S7265638782641" v-model="newScanner.serialNumber" />
-        </div>
-        <button type="submit">Dodaj skaner</button>
-      </form>
-    </div>
-    <div class="lists">
-      <!-- DODAWANIE DRUKARKI DO BAZY -->
-      <h2>Dodaj drukarkę</h2>
-      <form @submit.prevent="addPrinter">
-        <div>
-          <label for="printerName">Printer Name:</label>
-          <input type="text" id="printerName" placeholder="KON1L001" v-model="newPrinter.printerName" />
-        </div>
-        <div>
-          <label for="model">Model:</label>
-          <select id="model" v-model="newPrinter.model">
-            <option value="">--brak--</option>
-            <option value="QLn620">QLn620</option>
-            <option value="QLn220">QLn220</option>
-            <option value="ZQ630">ZQ630</option>
-          </select>
-        </div>
-        <div>
-          <label for="printerSerialNumber">Serial Number:</label>
-          <input type="text" id="printerSerialNumber" placeholder="S1203120312031" v-model="newPrinter.serialNumber" />
-        </div>
-        <button type="submit">Dodaj skaner</button>
-      </form>
-    </div>
-    <div class="lists">
-      <!-- WYDAWANIE SPRZĘTU -->
-      <h2>Wydawanie urządzeń</h2>
-      <form @submit.prevent="assignDevices">
-        <input type="text" v-model="userLogin" placeholder="login uzytkownika">
-        <input type="text" v-model="selectedScanner" placeholder="Skaner">
-        <input type="text" v-model="selectedPrinter" placeholder="Drukarka">
-        <button type="submit">Przydziel urządzenie</button>
-      </form>
-    </div>
-    <div class="lists">
-      <!-- ZDAWANIE SPRZĘTU -->
-      <h2>Zdawanie urządzeń</h2>
-      <form @submit.prevent="returnDevices('G')">
-        <input type="text" placeholder="login uzytkownika">
-        <input type="text" placeholder="Skaner">
-        <input type="text" placeholder="Drukarka">
-        <button type="submit">Przydziel urządzenie</button>
-      </form>
-    </div>
     <div class="main-list">
       <div class="lists">
         <!-- LISTA Z UŻYTKOWIKAMI KTÓRZY MAJĄ JUZ PRZYSPISANE URZĄDZENIA -->
@@ -361,7 +265,7 @@ export default {
       }
     },
     assignDevices() {
-      // Znajdź użytkownika na podstawie loginu
+      // Znajdź użytkownika/skaner/drukarke na podstawie loginu
       const user = this.users.find((u) => u.login === this.userLogin);
       const scanner = this.scanners.find((u) => u.scanner === this.scannerName);
       const printer = this.printers.find((u) => u.printer === this.printerName);
@@ -370,16 +274,17 @@ export default {
 
       if (user) {
         // Skopiuj użytkownika i przypisz wybrane urządzenia
+        console.log(user);
         const newUser = { ...user };
         newUser.assignedScanner = this.selectedScanner;
         newUser.assignedPrinter = this.selectedPrinter;
 
+        console.log(newUser);
         // Dodaj użytkownika do nowej tablicy lub zaktualizuj istniejący rekord
         const index = this.usersWithDevices.findIndex((u) => u.login === user.login);
         if (index !== -1) {
           // Jeśli użytkownik jest już w tablicy, zaktualizuj go
           // this.usersWithDevices[index] = newUser;
-
           alert('Ten uzytkownik ma juz przypisane urzadzenia');
           return
         } else {
@@ -403,7 +308,6 @@ export default {
       if (index !== -1) {
         // Usuń użytkownika z tablicy
         this.usersWithDevices.splice(index, 1);
-        index = '';
       } else {
         alert('Użytkownik nie istnieje w tablicy usersWithDevices.');
       }
