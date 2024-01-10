@@ -80,7 +80,8 @@ export default {
     },
     handleUpdateDevicesToAssign(data){
       this.$emit('assignDevicesToUser', data);
-      this.$emit('passEvent');
+      // Do poprawki bo nawet po błędnym wpisaniu danych zamyka modal a ponwinien posostac aktywny do ponownego wpisania danych
+      // this.$emit('passEvent'); 
     },
     handleUpdateDevicesToReturn(data){
       this.$emit('returnDevices', data);
