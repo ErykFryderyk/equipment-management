@@ -20,8 +20,10 @@
     <button @click="toggleModal('ReturnDevice')">Zdawanie urządzeń</button>
     <div class="main-list">
       <div class="lists">
+        <input v-model="deviceToDelete" type="text" placeholder="Nazwa urządzenia">
+        <button @click="removePrinter(deviceToDelete)">Usuń urządzenie</button>
         <!-- LISTA Z UŻYTKOWIKAMI KTÓRZY MAJĄ JUZ PRZYSPISANE URZĄDZENIA -->
-        <h2>Przypisane urządzenia</h2>
+        <h2>In use</h2>
         <h3 v-if="userWithDevices > 0">--brak--</h3>
         <ul>
           <li v-for="element in usersWithDevices" :key="element.userID">
@@ -30,34 +32,34 @@
         </ul>
       </div>
     </div>
-    <h2>Baza Uzytkowników i urządzeń</h2>
+    <h2>Base of Users and Devices</h2>
     <div class="main-list">
       <div class="lists">
-        <DevicesList :users="users" :msg="'Lista pracowników'" />
+        <DevicesList :users="users" :msg="'Users list'" />
       </div>
       <div class="lists">
-        <h2>Lista Skanerów:</h2>
+        <h2>Scanners list:</h2>
         <ul>
           <li v-for="scanner in scanners" :key="scanner.scannerID">
             <b>Scanner ID:</b> {{ scanner.scannerID }}<br>
             <b>Scanner Name:</b> {{ scanner.scannerName }}<br>
-            <b>W uzyciu:</b> {{ scanner.isInUse ? 'Tak' : 'Nie' }}<br>
+            <b>In use:</b> {{ scanner.isInUse ? 'Tak' : 'Nie' }}<br>
             <b>Model:</b> {{ scanner.model }}<br>
             <b>Serial Number:</b> {{ scanner.serialNumber }}<br>
-            <b>Ostatnio uzywany:</b> {{ scanner.recentlyActive }}
+            <b>Added:</b> {{ scanner.date }}
           </li>
         </ul>
       </div>
       <div class="lists">
-        <h2>Lista Drukarek:</h2>
+        <h2>Printers list:</h2>
         <ul>
           <li v-for="printer in printers" :key="printer.printerID">
             <b>Printer ID:</b> {{ printer.printerID }}<br>
             <b>Printer Name:</b> {{ printer.printerName }}<br>
-            <b>W uzyciu:</b> {{ printer.isInUse ? 'Tak' : 'Nie' }}<br>
+            <b>In use:</b> {{ printer.isInUse ? 'Tak' : 'Nie' }}<br>
             <b>Model:</b> {{ printer.model }}<br>
             <b>Serial Number:</b> {{ printer.serialNumber }}<br>
-            <b>Ostatnio uzywany:</b> {{ printer.recentlyActive }}
+            <b>Added:</b> {{ printer.date }}
           </li>
         </ul>
       </div>
@@ -80,7 +82,8 @@ export default {
       selectedScanner: null, // Pole formularza - wybrany skaner
       selectedPrinter: null, // Pole formularza - wybrana drukarka
       isModalActive: false,
-      existingUser: '',
+      existingUser: '', // zmienna do usunięcia urzytkownika
+      deviceToDelete: null, // zmienna do usuwania urządzenia
       currentComponent: null, // Przechowuje aktualny widoczny komponent
 
       usersWithDevices: [
@@ -134,7 +137,7 @@ export default {
           isInUse: false,
           model: 'TC52',
           serialNumber: 'S129281239123',
-          recentlyActive: '10-10-2023',
+          date: '10-10-2023',
         },
         {
           scannerID: 2,
@@ -142,7 +145,7 @@ export default {
           isInUse: false,
           model: 'TC52',
           serialNumber: 'S129281239123',
-          recentlyActive: '10-10-2023',
+          date: '10-10-2023',
         },
       ],
       printers: [
@@ -152,7 +155,7 @@ export default {
           isInUse: false,
           model: 'QLn620',
           serialNumber: '123123123',
-          recentlyActive: '10-10-2023',
+          date: '10-10-2023',
         },
         {
           printerID: 2,
@@ -160,7 +163,7 @@ export default {
           isInUse: false,
           model: 'QLn620',
           serialNumber: '123123123',
-          recentlyActive: '10-10-2023',
+          date: '10-10-2023',
         },
       ]
     }
@@ -232,12 +235,31 @@ export default {
           isInUse: false,
           model: this.newScanner.model,
           serialNumber: this.newScanner.serialNumber,
-          recentlyActive: new Date(),
+          date: `${String(new Date().getDate()).padStart(2, '0')}-${String(new Date().getMonth()+1).padStart(2, '0')}-${new Date().getFullYear()}`,
         });
         // Resetowanie danych z formularza
         this.newScanner.scannerName = '';
         this.newScanner.model = '';
         this.newScanner.serialNumber = '';
+      }
+    },
+    removeScanner() {
+      const indexToRemove = this.scanners.findIndex((scanner) => scanner.scannerName === this.deviceToDelete);
+      console.log(indexToRemove);
+      if (indexToRemove !== -1) {
+        this.scanners.splice(indexToRemove, 1);
+        this.deviceToDelete = null
+      } else {
+        alert('Urządzenie nie istnieje');
+      }
+    },
+    removePrinter() {
+      const indexToRemove = this.printers.findIndex((printer) => printer.printerName === this.deviceToDelete);
+      if (indexToRemove !== -1) {
+        this.printers.splice(indexToRemove, 1);
+        this.deviceToDelete = null
+      } else {
+        alert('Urządzenie nie istnieje');
       }
     },
     addPrinter() {
@@ -256,7 +278,7 @@ export default {
           isInUse: false,
           model: this.newPrinter.model,
           serialNumber: this.newPrinter.serialNumber,
-          recentlyActive: new Date(),
+          date: `${String(new Date().getDate()).padStart(2, '0')}-${String(new Date().getMonth()+1).padStart(2, '0')}-${new Date().getFullYear()}`,
         });
         // Resetowanie danych z formularza
         this.newPrinter.printerName = '';
@@ -274,12 +296,10 @@ export default {
 
       if (user) {
         // Skopiuj użytkownika i przypisz wybrane urządzenia
-        console.log(user);
         const newUser = { ...user };
         newUser.assignedScanner = this.selectedScanner;
         newUser.assignedPrinter = this.selectedPrinter;
 
-        console.log(newUser);
         // Dodaj użytkownika do nowej tablicy lub zaktualizuj istniejący rekord
         const index = this.usersWithDevices.findIndex((u) => u.login === user.login);
         if (index !== -1) {
@@ -288,7 +308,7 @@ export default {
           alert('Ten uzytkownik ma juz przypisane urzadzenia');
           return
         } else {
-          // Jeśli użytkownik nie istnieje w tablicy, dodaj go
+          // Jeśli użytkownik nie istnieje w tablicy z urządzeniami, dodaj go
           this.usersWithDevices.push(newUser);
         }
 
@@ -299,7 +319,6 @@ export default {
       } else {
         alert('Użytkownik o podanym loginie nie istnieje.');
       }
-      console.log(this.usersWithDevices);
     },
     returnDevices(data) {
       // Znajdź indeks użytkownika w tablicy usersWithDevices
