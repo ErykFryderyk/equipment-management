@@ -1,16 +1,8 @@
 <template>
   <div class="app-container">
-    <Modal 
-      v-show="isModalActive" 
-      @pass-event="toggleModal" 
-      :component="currentComponent" 
-      @updateData="handleUpdateData"
-      @updateScanner="handleUpdateScanner"
-      @updatePrinter="handleUpdatePrinter"
-      @updateUsersList="handleUpdateUsers"
-      @assignDevicesToUser="handleUpdateAssignedDevices"
-      @returnDevices="returnDevices"
-    />
+    <Modal v-show="isModalActive" @pass-event="toggleModal" :component="currentComponent" @updateData="handleUpdateData"
+      @updateScanner="handleUpdateScanner" @updatePrinter="handleUpdatePrinter" @updateUsersList="handleUpdateUsers"
+      @assignDevicesToUser="handleUpdateAssignedDevices" @returnDevices="returnDevices" />
     <h1>Warehouse Manager</h1>
     <button @click="toggleModal('AddNewScanner')">Dodaj skaner</button>
     <button @click="toggleModal('AddNewPrinter')">Dodaj drukarkę</button>
@@ -24,44 +16,108 @@
         <button @click="removePrinter(deviceToDelete)">Usuń urządzenie</button>
         <!-- LISTA Z UŻYTKOWIKAMI KTÓRZY MAJĄ JUZ PRZYSPISANE URZĄDZENIA -->
         <h2>In use</h2>
-        <h3 v-if="userWithDevices > 0">--brak--</h3>
-        <ul>
-          <li v-for="element in usersWithDevices" :key="element.userID">
-            {{ element.login }} - {{ element.assignedScanner }} - {{ element.assignedPrinter }}
-          </li>
-        </ul>
+        <div>
+          <table>
+            <thead>
+              <tr>
+                <th style="width:20px">Lp.</th>
+                <th>Users</th>
+                <th>Printers</th>
+                <th>Scanners</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(element, index) in usersWithDevices" :key="index">
+                <td>{{ index + 1 }}</td>
+                <td>{{ element.login }}</td>
+                <td>{{ element.assignedScanner }}</td>
+                <td>{{ element.assignedPrinter }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
+
     </div>
-    <h2>Base of Users and Devices</h2>
     <div class="main-list">
       <div class="lists">
-        <DevicesList :users="users" :msg="'Users list'" />
-      </div>
-      <div class="lists">
-        <h2>Scanners list:</h2>
-        <ul>
-          <li v-for="scanner in scanners" :key="scanner.scannerID">
-            <b>Scanner ID:</b> {{ scanner.scannerID }}<br>
-            <b>Scanner Name:</b> {{ scanner.scannerName }}<br>
-            <b>In use:</b> {{ scanner.isInUse ? 'Tak' : 'Nie' }}<br>
-            <b>Model:</b> {{ scanner.model }}<br>
-            <b>Serial Number:</b> {{ scanner.serialNumber }}<br>
-            <b>Added:</b> {{ scanner.date }}
-          </li>
-        </ul>
-      </div>
-      <div class="lists">
-        <h2>Printers list:</h2>
-        <ul>
-          <li v-for="printer in printers" :key="printer.printerID">
-            <b>Printer ID:</b> {{ printer.printerID }}<br>
-            <b>Printer Name:</b> {{ printer.printerName }}<br>
-            <b>In use:</b> {{ printer.isInUse ? 'Tak' : 'Nie' }}<br>
-            <b>Model:</b> {{ printer.model }}<br>
-            <b>Serial Number:</b> {{ printer.serialNumber }}<br>
-            <b>Added:</b> {{ printer.date }}
-          </li>
-        </ul>
+        <div class="tabs">
+          <button @click="activeTab = 'users'" :class="{ 'active': activeTab === 'users' }">Użytkownicy</button>
+          <button @click="activeTab = 'scanners'" :class="{ 'active': activeTab === 'scanners' }">Skanery</button>
+          <button @click="activeTab = 'printers'" :class="{ 'active': activeTab === 'printers' }">Drukarki</button>
+        </div>
+
+        <div v-if="activeTab === 'users'">
+          <h2>Lista użytkowników</h2>
+          <table>
+            <thead>
+              <tr>
+                <th style="width:20px">Lp.</th>
+                <th>Name</th>
+                <th>Login</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(user, index) in users" :key="index">
+                <td>{{ index + 1 }}</td>
+                <td>{{ user.name }}</td>
+                <td>{{ user.login }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div v-if="activeTab === 'scanners'">
+          <h2>Lista skanerów</h2>
+          <table>
+            <thead>
+              <tr>
+                <th style="width:20px">Lp.</th>
+                <th>Name</th>
+                <th>Model</th>
+                <th>Serial Number</th>
+                <th>Added</th>
+                <th>In Use</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(scanner, index) in scanners" :key="index">
+                <td>{{ index + 1 }}</td>
+                <td>{{ scanner.scannerName }}</td>
+                <td>{{ scanner.model }}</td>
+                <td>{{ scanner.serialNumber }}</td>
+                <td>{{ scanner.date }}</td>
+                <td>{{ scanner.isInUse }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div v-if="activeTab === 'printers'">
+          <h2>Lista drukarek</h2>
+          <table>
+            <thead>
+              <tr>
+                <th style="width:20px">Lp.</th>
+                <th>Name</th>
+                <th>Model</th>
+                <th>Serial Number</th>
+                <th>Added</th>
+                <th>In Use</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(printer, index) in printers" :key="index">
+                <td>{{ index + 1 }}</td>
+                <td>{{ printer.printerName }}</td>
+                <td>{{ printer.model }}</td>
+                <td>{{ printer.serialNumber }}</td>
+                <td>{{ printer.date }}</td>
+                <td>{{ printer.isInUse }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
@@ -78,6 +134,21 @@ export default {
   },
   data() {
     return {
+      //Testowa tabela do zakładek 
+      activeTab: 'users',
+      users: ['User 1', 'User 2', 'User 3'],
+      scanners: ['Scanner 1', 'Scanner 2', 'Scanner 3'],
+      printers: ['Printer 1', 'Printer 2', 'Printer 3'],
+
+
+      //testowa tabela
+      tableData: [
+        { user: 'User 1', printer: 'Printer 1', scanner: 'Scanner 1' },
+        { user: 'User 2', printer: 'Printer 2', scanner: 'Scanner 2' },
+        { user: 'User 3', printer: 'Printer 3', scanner: 'Scanner 3' },
+        // Dodaj więcej danych według potrzeb
+      ],
+
       userLogin: null, // Pole formularza - login użytkownika
       selectedScanner: null, // Pole formularza - wybrany skaner
       selectedPrinter: null, // Pole formularza - wybrana drukarka
@@ -189,7 +260,7 @@ export default {
       this.existingUser = data;
       this.removeUserByLogin();
     },
-    handleUpdateAssignedDevices(data){
+    handleUpdateAssignedDevices(data) {
       this.userLogin = data.userLogin;
       this.selectedScanner = data.selectedScanner;
       this.selectedPrinter = data.selectedPrinter;
@@ -235,7 +306,7 @@ export default {
           isInUse: false,
           model: this.newScanner.model,
           serialNumber: this.newScanner.serialNumber,
-          date: `${String(new Date().getDate()).padStart(2, '0')}-${String(new Date().getMonth()+1).padStart(2, '0')}-${new Date().getFullYear()}`,
+          date: `${String(new Date().getDate()).padStart(2, '0')}-${String(new Date().getMonth() + 1).padStart(2, '0')}-${new Date().getFullYear()}`,
         });
         // Resetowanie danych z formularza
         this.newScanner.scannerName = '';
@@ -278,7 +349,7 @@ export default {
           isInUse: false,
           model: this.newPrinter.model,
           serialNumber: this.newPrinter.serialNumber,
-          date: `${String(new Date().getDate()).padStart(2, '0')}-${String(new Date().getMonth()+1).padStart(2, '0')}-${new Date().getFullYear()}`,
+          date: `${String(new Date().getDate()).padStart(2, '0')}-${String(new Date().getMonth() + 1).padStart(2, '0')}-${new Date().getFullYear()}`,
         });
         // Resetowanie danych z formularza
         this.newPrinter.printerName = '';
@@ -334,7 +405,7 @@ export default {
     isScannerNameExists(scannerName) {
       return this.scanners.some(scanner => scanner.scannerName === scannerName);
     },
-    toggleModal(componentName){
+    toggleModal(componentName) {
       this.isModalActive = !this.isModalActive;
       this.currentComponent = componentName;
     }
@@ -343,6 +414,55 @@ export default {
 </script>
 
 <style lang="scss">
+/* Dodaj stylizację zakładek i treści według potrzeb */
+.tabs {
+  display: flex;
+}
+
+button {
+  cursor: pointer;
+  padding: 10px;
+  margin-right: 10px;
+  border: 1px solid #ddd;
+  background-color: #f2f2f2;
+}
+
+button.active {
+  background-color: #ddd;
+}
+
+h2 {
+  margin-bottom: 10px;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  margin-bottom: 5px;
+}
+
+
+
+/* Dodaj stylizację według potrzeb */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
 body {
   background-color: #f2f2f2;
 }
