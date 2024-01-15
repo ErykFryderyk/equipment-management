@@ -31,9 +31,9 @@ export default {
   data() {
     return {
       printer: {
-        printerName: '',
+        printerName: 'KON1L',
         model: '',
-        serialNumber: ''
+        serialNumber: 'Q123123123'
       }
     }
   },

@@ -31,9 +31,9 @@ export default {
   data() {
     return {
       scanner: {
-        scannerName: 'k',
+        scannerName: 'KON1S',
         model: '',
-        serialNumber: 'j',
+        serialNumber: 'S123123',
 
       }
     }
