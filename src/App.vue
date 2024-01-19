@@ -136,19 +136,6 @@ export default {
     return {
       //Testowa tabela do zakładek 
       activeTab: 'users',
-      users: ['User 1', 'User 2', 'User 3'],
-      scanners: ['Scanner 1', 'Scanner 2', 'Scanner 3'],
-      printers: ['Printer 1', 'Printer 2', 'Printer 3'],
-
-
-      //testowa tabela
-      tableData: [
-        { user: 'User 1', printer: 'Printer 1', scanner: 'Scanner 1' },
-        { user: 'User 2', printer: 'Printer 2', scanner: 'Scanner 2' },
-        { user: 'User 3', printer: 'Printer 3', scanner: 'Scanner 3' },
-        // Dodaj więcej danych według potrzeb
-      ],
-
       userLogin: null, // Pole formularza - login użytkownika
       selectedScanner: null, // Pole formularza - wybrany skaner
       selectedPrinter: null, // Pole formularza - wybrana drukarka
@@ -159,9 +146,9 @@ export default {
 
       usersWithDevices: [
         {
-          login: 'G',
-          assignedScanner: 'KON1S111',
-          assignedPrinter: 'KON1L111',
+          login: 'GRZKOS',
+          assignedScanner: 'KON1S069',
+          assignedPrinter: 'KON1L069',
         }
       ],
       //Data to add/remove 
@@ -197,8 +184,13 @@ export default {
         },
         {
           userID: 4,
-          login: 'G',
-          name: 'Gregorian wielki',
+          login: 'GREWIL',
+          name: 'Gregorian Wielki',
+        },
+        {
+          userID: 5,
+          login: 'GRZKOS',
+          name: 'Grzegorz Kostka',
         },
       ],
       scanners: [
