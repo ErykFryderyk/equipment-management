@@ -85,7 +85,7 @@ export default {
     },
     handleUpdateDevicesToReturn(data){
       this.$emit('returnDevices', data);
-      this.$emit('passEvent');
+      // this.$emit('passEvent');
     },
     showComponent(componentName) {
       // Ustawia aktualny komponent na ten, który ma być widoczny
