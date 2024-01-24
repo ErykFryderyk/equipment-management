@@ -58,14 +58,10 @@ export default {
       this.printerNameError = !printerName.includes('KON1L');
       this.printerNameEmptyError = printerName === '';
 
-
-      // Sprawdzenie, czy wszystkie warunki walidacji są spełnione
+      // Walidacja formularza
+      // Sprawdzenie, czy wszystkie warunki walidacji są spełnione...
       if (!this.userLoginError && !this.scannerNameError && !this.printerNameError) {
-        this.formData.userLogin = '';
-        this.formData.selectedScanner = '';
-        this.formData.selectedPrinter = '';
-
-        this.$emit('returnDevices', login);
+        this.$emit('returnDevices', [login,scannerName,printerName]);
       };
     }
   }
