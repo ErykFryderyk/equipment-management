@@ -1,8 +1,8 @@
 <template>
   <div class="app-container">
-    <Modal v-show="isModalActive" @pass-event="toggleModal" :component="currentComponent" @updateData="handleUpdateData"
+    <Modal v-show="isModalActive" @pass-event="toggleModal" :component="currentComponent" @updateData="addUser"
       @updateScanner="handleUpdateScanner" @updatePrinter="handleUpdatePrinter" @updateUsersList="handleUpdateUsers"
-      @assignDevicesToUser="handleUpdateAssignedDevices" @returnDevices="returnDevices" />
+      @assignDevicesToUser="assignDevices" @returnDevices="returnDevices" />
     <h1>Warehouse Manager</h1>
     <button @click="toggleModal('AddNewScanner')">Dodaj skaner</button>
     <button @click="toggleModal('AddNewPrinter')">Dodaj drukarkę</button>
@@ -149,6 +149,11 @@ export default {
           login: 'GRZKOS',
           assignedScanner: 'KON1S069',
           assignedPrinter: 'KON1L069',
+        },
+        {
+          login: 'GREWIL',
+          assignedScanner: 'KON1S001',
+          assignedPrinter: 'KON1L001',
         }
       ],
       //Data to add/remove 
@@ -232,11 +237,6 @@ export default {
     }
   },
   methods: {
-    handleUpdateData(data) {
-      // Obsługa zdarzenia updateData z Modal, odbieramy dane
-      this.newUser = data;
-      this.addUser();
-    },
     handleUpdateScanner(data) {
       // Obsługa zdarzenia updateData z Modal, odbieramy dane
       this.newScanner = data;
@@ -247,32 +247,30 @@ export default {
       this.newPrinter = data;
       this.addPrinter();
     },
+
     handleUpdateUsers(data) {
       // Obsługa zdarzenia updateUsers z Modal, odbieramy dane
       this.existingUser = data;
       this.removeUserByLogin();
     },
-    handleUpdateAssignedDevices(data) {
-      this.userLogin = data.userLogin;
-      this.selectedScanner = data.selectedScanner;
-      this.selectedPrinter = data.selectedPrinter;
-      this.assignDevices();
-    },
-    addUser() {
+
+    addUser(data) {
       // Generowanie unikalnego userID
       const maxUserID = Math.max(...this.users.map(user => user.userID));
       const newUserID = maxUserID + 1;
+      const user = this.users.find((u) => u.login === data.login);
 
-      // Dodaj nowego użytkownika do tablicy users
-      this.users.push({
-        userID: newUserID,
-        login: this.newUser.login,
-        name: this.newUser.name,
-      });
-
-      // Zresetuj dane formularza
-      this.newUser.login = '';
-      this.newUser.name = '';
+      if(!user) {
+        // Dodaj nowego użytkownika do tablicy users
+        this.users.push({
+          userID: newUserID,
+          login: data.login,
+          name: data.name,
+        });
+      } else {
+        alert('Istnieje juz uzytkownik o takim loginie');
+        return;
+      }
     },
     removeUserByLogin(login) {
       const index = this.users.findIndex((u) => u.login === this.existingUser);
@@ -349,24 +347,24 @@ export default {
         this.newPrinter.serialNumber = '';
       }
     },
-    assignDevices() {
+    assignDevices(data) {
       // Znajdź użytkownika/skaner/drukarke na podstawie loginu
-      const user = this.users.find((u) => u.login === this.userLogin);
-      const scanner = this.scanners.find((u) => u.scanner === this.scannerName);
-      const printer = this.printers.find((u) => u.printer === this.printerName);
+      const user = this.users.find((u) => u.login === data.user);
+      // const scanner = this.scanners.find((u) => u.scanner === this.scannerName);
+      // const printer = this.printers.find((u) => u.printer === this.printerName);
 
       // this.isScannerNameExists();
 
       if (user) {
         // Skopiuj użytkownika i przypisz wybrane urządzenia
         const newUser = { ...user };
-        newUser.assignedScanner = this.selectedScanner;
-        newUser.assignedPrinter = this.selectedPrinter;
+        newUser.assignedScanner = data.scanner;
+        newUser.assignedPrinter = data.printer;
 
-        // Dodaj użytkownika do nowej tablicy lub zaktualizuj istniejący rekord
+        console.log(newUser);
+        // Dodaj użytkownika do tablicy 
         const index = this.usersWithDevices.findIndex((u) => u.login === user.login);
         if (index !== -1) {
-          // Jeśli użytkownik jest już w tablicy, zaktualizuj go
           // this.usersWithDevices[index] = newUser;
           alert('Ten uzytkownik ma juz przypisane urzadzenia');
           return
@@ -385,17 +383,23 @@ export default {
     },
     returnDevices(data) {
       // Znajdź indeks użytkownika w tablicy usersWithDevices
-      const index = this.usersWithDevices.findIndex((u) => u.login === data);
+      const userIndex = this.usersWithDevices.findIndex((u) => u.login === data[0]);
+      const scanner = data[1];
+      const printer = data[2];
+      
+      // Sprawdzanie czy istnieje uzytkownik o podanym loginie w tablicy
+      if (userIndex !== -1) {
+        // Sprawdzanie czy u 
+        if (this.usersWithDevices[userIndex].assignedScanner === scanner && this.usersWithDevices[userIndex].assignedPrinter === printer){
 
-      if (index !== -1) {
-        // Usuń użytkownika z tablicy
-        this.usersWithDevices.splice(index, 1);
+          // usuwanie użytkownika z urzadzeniami z tablicy
+          this.usersWithDevices.splice(userIndex, 1);
+        } else {
+          console.error('Te urzadzenia nie są przypisane do tego uzytkownia')
+        }
       } else {
-        alert('Użytkownik nie istnieje w tablicy usersWithDevices.');
+        console.error('Użytkownik nie istnieje w tablicy.');
       }
-    },
-    isScannerNameExists(scannerName) {
-      return this.scanners.some(scanner => scanner.scannerName === scannerName);
     },
     toggleModal(componentName) {
       this.isModalActive = !this.isModalActive;
