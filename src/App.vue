@@ -260,7 +260,7 @@ export default {
       const newUserID = maxUserID + 1;
       const user = this.users.find((u) => u.login === data.login);
 
-      if(!user) {
+      if (!user) {
         // Dodaj nowego użytkownika do tablicy users
         this.users.push({
           userID: newUserID,
@@ -350,18 +350,29 @@ export default {
     assignDevices(data) {
       // Znajdź użytkownika/skaner/drukarke na podstawie loginu
       const user = this.users.find((u) => u.login === data.user);
-      // const scanner = this.scanners.find((u) => u.scanner === this.scannerName);
-      // const printer = this.printers.find((u) => u.printer === this.printerName);
+      const scanner = this.scanners.find((u) => u.scannerName === data.scanner);
+      const printer = this.printers.find((u) => u.printerName === data.printer);
 
-      // this.isScannerNameExists();
+      this.isScannerInUse(scanner);
 
+      if (!scanner.isInUse) {
+        const scannerIndex = this.scanners.findIndex((s) => s.scannerName === data.scanner);
+        if (scannerIndex !== -1) {
+          // Znaleziono skaner o podanej nazwie
+          this.scanners[scannerIndex].isInUse = true;
+          console.log(`Scanner marked as in use.`);
+        }
+      } else {
+        alert("Scanner jest juz w uzyciu")
+        return
+      }
+      
       if (user) {
         // Skopiuj użytkownika i przypisz wybrane urządzenia
         const newUser = { ...user };
         newUser.assignedScanner = data.scanner;
         newUser.assignedPrinter = data.printer;
 
-        console.log(newUser);
         // Dodaj użytkownika do tablicy 
         const index = this.usersWithDevices.findIndex((u) => u.login === user.login);
         if (index !== -1) {
@@ -386,11 +397,11 @@ export default {
       const userIndex = this.usersWithDevices.findIndex((u) => u.login === data[0]);
       const scanner = data[1];
       const printer = data[2];
-      
+
       // Sprawdzanie czy istnieje uzytkownik o podanym loginie w tablicy
       if (userIndex !== -1) {
         // Sprawdzanie czy u 
-        if (this.usersWithDevices[userIndex].assignedScanner === scanner && this.usersWithDevices[userIndex].assignedPrinter === printer){
+        if (this.usersWithDevices[userIndex].assignedScanner === scanner && this.usersWithDevices[userIndex].assignedPrinter === printer) {
 
           // usuwanie użytkownika z urzadzeniami z tablicy
           this.usersWithDevices.splice(userIndex, 1);
@@ -404,7 +415,10 @@ export default {
     toggleModal(componentName) {
       this.isModalActive = !this.isModalActive;
       this.currentComponent = componentName;
-    }
+    },
+    isScannerInUse(value) {
+
+    },
   }
 }
 </script>
