@@ -202,7 +202,7 @@ export default {
         {
           scannerID: 1,
           scannerName: 'KON1S001',
-          isInUse: false,
+          isInUse: true,
           model: 'TC52',
           serialNumber: 'S129281239123',
           date: '10-10-2023',
@@ -220,7 +220,7 @@ export default {
         {
           printerID: 1,
           printerName: 'KON1L001',
-          isInUse: false,
+          isInUse: true,
           model: 'QLn620',
           serialNumber: '123123123',
           date: '10-10-2023',
@@ -348,49 +348,54 @@ export default {
       }
     },
     assignDevices(data) {
-      // Znajdź użytkownika/skaner/drukarke na podstawie loginu
-      const user = this.users.find((u) => u.login === data.user);
-      const scanner = this.scanners.find((u) => u.scannerName === data.scanner);
-      const printer = this.printers.find((u) => u.printerName === data.printer);
+      const user = this.users.find(u => u.login === data.user);
+      const scanner = this.scanners.find(u => u.scannerName === data.scanner);
+      const printer = this.printers.find(u => u.printerName === data.printer);
 
-      this.isScannerInUse(scanner);
-
-      if (!scanner.isInUse) {
-        const scannerIndex = this.scanners.findIndex((s) => s.scannerName === data.scanner);
-        if (scannerIndex !== -1) {
-          // Znaleziono skaner o podanej nazwie
-          this.scanners[scannerIndex].isInUse = true;
-          console.log(`Scanner marked as in use.`);
-        }
-      } else {
-        alert("Scanner jest juz w uzyciu")
-        return
+      if (!user) {
+        alert('Użytkownik nie istnieje');
+        return;
       }
-      
-      if (user) {
-        // Skopiuj użytkownika i przypisz wybrane urządzenia
-        const newUser = { ...user };
-        newUser.assignedScanner = data.scanner;
-        newUser.assignedPrinter = data.printer;
 
-        // Dodaj użytkownika do tablicy 
-        const index = this.usersWithDevices.findIndex((u) => u.login === user.login);
-        if (index !== -1) {
-          // this.usersWithDevices[index] = newUser;
-          alert('Ten uzytkownik ma juz przypisane urzadzenia');
-          return
-        } else {
-          // Jeśli użytkownik nie istnieje w tablicy z urządzeniami, dodaj go
-          this.usersWithDevices.push(newUser);
-        }
-
-        // Zresetuj pola formularza
-        this.userLogin = '';
-        this.selectedScanner = null;
-        this.selectedPrinter = null;
-      } else {
-        alert('Użytkownik o podanym loginie nie istnieje.');
+      const userWithDevices = this.usersWithDevices.find(u => u.login === data.user);
+      if (userWithDevices) {
+        alert('Użytkownik posiada już urządzenia');
+        return;
       }
+
+      if (!scanner) {
+        alert('Skaner nie istnieje');
+        return;
+      }
+
+      if (!printer) {
+        alert('Drukarka nie istnieje');
+        return;
+      }
+
+      if (scanner.isInUse || printer.isInUse) {
+        alert('Urządzenia są w użyciu');
+        return;
+      }
+
+      // Zmiana statusu "isInUse" w głównej tabeli
+      this.scanners.find(s => s.scannerName === data.scanner).isInUse = true;
+      this.printers.find(p => p.printerName === data.printer).isInUse = true;
+
+      // Skopiowanie użytkownika i przypisanie wybranych urządzeń
+      const newUser = {
+        login: user.login,
+        assignedScanner: scanner.scannerName,
+        assignedPrinter: printer.printerName
+      };
+
+      // Dodanie użytkownika do tablicy
+      this.usersWithDevices.push(newUser);
+
+      // Zresetowanie pól formularza
+      this.userLogin = '';
+      this.selectedScanner = '';
+      this.selectedPrinter = '';
     },
     returnDevices(data) {
       // Znajdź indeks użytkownika w tablicy usersWithDevices
@@ -415,9 +420,6 @@ export default {
     toggleModal(componentName) {
       this.isModalActive = !this.isModalActive;
       this.currentComponent = componentName;
-    },
-    isScannerInUse(value) {
-
     },
   }
 }
