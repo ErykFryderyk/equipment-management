@@ -87,7 +87,7 @@
                 <td>{{ scanner.model }}</td>
                 <td>{{ scanner.serialNumber }}</td>
                 <td>{{ scanner.date }}</td>
-                <td>{{ scanner.isInUse }}</td>
+                <td>{{ scanner.isInUse ? "Tak" : "Nie" }}</td>
               </tr>
             </tbody>
           </table>
@@ -113,7 +113,7 @@
                 <td>{{ printer.model }}</td>
                 <td>{{ printer.serialNumber }}</td>
                 <td>{{ printer.date }}</td>
-                <td>{{ printer.isInUse }}</td>
+                <td>{{ printer.isInUse ? "Tak" : "Nie" }}</td>
               </tr>
             </tbody>
           </table>
@@ -215,6 +215,14 @@ export default {
           serialNumber: 'S129281239123',
           date: '10-10-2023',
         },
+        {
+          scannerID: 3,
+          scannerName: 'KON1S069',
+          isInUse: true,
+          model: 'TC52',
+          serialNumber: 'S129281239123',
+          date: '10-10-2023',
+        },
       ],
       printers: [
         {
@@ -229,6 +237,14 @@ export default {
           printerID: 2,
           printerName: 'KON1L002',
           isInUse: false,
+          model: 'QLn620',
+          serialNumber: '123123123',
+          date: '10-10-2023',
+        },
+        {
+          printerID: 3,
+          printerName: 'KON1L069',
+          isInUse: true,
           model: 'QLn620',
           serialNumber: '123123123',
           date: '10-10-2023',
@@ -410,6 +426,10 @@ export default {
 
           // usuwanie użytkownika z urzadzeniami z tablicy
           this.usersWithDevices.splice(userIndex, 1);
+
+          // Zmiana statusu "isInUse" w głównej tabeli
+          this.scanners.find(s => s.scannerName === scanner).isInUse = false;
+          this.printers.find(p => p.printerName === printer).isInUse = false;
         } else {
           console.error('Te urzadzenia nie są przypisane do tego uzytkownia')
         }
@@ -417,6 +437,7 @@ export default {
         console.error('Użytkownik nie istnieje w tablicy.');
       }
     },
+    //aktywowanie/dezaktywacja modal z odpowiednią zawartością
     toggleModal(componentName) {
       this.isModalActive = !this.isModalActive;
       this.currentComponent = componentName;
