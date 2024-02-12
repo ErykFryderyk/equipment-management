@@ -4,7 +4,7 @@
     <h2>Wydawanie urządzeń</h2>
     <form @submit.prevent="assignDevices">
       <!-- error messages -->
-      <span v-if="userLoginError" class="error">Login musi mieć co najmniej 6 znaków.</span>
+      <span v-if="userLoginError" class="error">Login musi zawierać 6 znaków.</span>
       <span v-if="userLoginEmptyError" class="error">Login nie może być pusty.</span>
       <span v-if="scannerNameError" class="error">Nazwa skanera musi zawierać "KON1S***".</span>
       <span v-if="scannerNameEmptyError" class="error">Nazwa skanera nie może być pusta.</span>
