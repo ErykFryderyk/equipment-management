@@ -28,4 +28,21 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+form {
+  padding: 20px 100px;
+  display: flex;
+  justify-content: center;
+  align-items: space-between;
+  flex-direction: column;
+}
+
+input {
+  margin-bottom: 30px;
+}
+
+.error {
+  color: red;
+  font-size: 12px;
+}
+</style>
