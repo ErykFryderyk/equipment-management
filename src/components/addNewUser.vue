@@ -7,7 +7,7 @@
       <span v-if="!nameValid" style="color: red;">Imię i nazwisko nie mogą być dłuższe niż 50 znaków.</span>
       <div>
         <label for="login">Login:</label>
-        <input type="text" id="login" v-model="newUser.login" :style="{ color: loginValid ? 'green' : 'red' }" />
+        <input type="text" id="login" maxlength="6" v-model="newUser.login" :style="{ color: loginValid ? 'green' : 'red' }" />
       </div>
       <div>
         <label for="name">Imię i nazwisko:</label>
@@ -33,7 +33,7 @@ export default {
   },
   watch: {
     'newUser.login': function (newVal) {
-      this.loginValid = newVal.length === 6;
+      this.loginValid = newVal.length === 6 && /^[a-zA-Z]+$/.test(newVal);
     },
     'newUser.name': function (newVal) {
       this.nameValid = newVal.length <= 50 && /\s/.test(newVal);
