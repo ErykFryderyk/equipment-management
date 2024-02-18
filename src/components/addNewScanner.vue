@@ -34,9 +34,9 @@ export default {
   data() {
     return {
       scanner: {
-        scannerName: 'KON1S',
+        scannerName: '',
         model: '',
-        serialNumber: 'S123123',
+        serialNumber: '',
       },
       nameValid: false,
       modelValid: false,
@@ -48,7 +48,7 @@ export default {
       this.nameValid = newVal.length === 8;
     },
     'scanner.model': function (newVal) {
-      this.modelValid = newVal.lenght != '';
+      this.modelValid = newVal.lenght !== 0;
     },
     'scanner.serialNumber': function (newVal) {
       this.serialValid = newVal.length >= 12;
