@@ -60,32 +60,32 @@ export default {
     handleUpdateData(data) {
       // Otrzymujemy dane z AddNewUser i przekazujemy do komponentu rodzica
       this.$emit('updateData', data);
-      this.$emit('passEvent');
+      // this.$emit('passEvent'); // toggle modal
     },
     handleUpdateScanner(data) {
       this.$emit('updateScanner', data);
-      this.$emit('passEvent');
+      // this.$emit('passEvent'); // toggle modal
     },
     handleUpdatePrinter(data) {
       this.$emit('updatePrinter', data);
-      this.$emit('passEvent');
+      this.$emit('passEvent'); // toggle modal
     },
     handleUpdateUsers(data) {
       this.$emit('updateUsersList', data);
-      this.$emit('passEvent');
-    },
-    handleUpdateUsers(data) {
-      this.$emit('updateUsersList', data);
-      this.$emit('passEvent');
+      // this.$emit('passEvent'); // toggle modal
     },
     handleUpdateDevicesToAssign(data){
       this.$emit('assignDevicesToUser', data);
       // Do poprawki bo nawet po błędnym wpisaniu danych zamyka modal a ponwinien posostac aktywny do ponownego wpisania danych
-      // this.$emit('passEvent'); 
+      // this.$emit('passEvent');  // toggle modal
     },
+    // handleUpdateDevicesToReturn(data){
+    //   this.$emit('returnDevices', data);
+    //   // this.$emit('passEvent');
+    // },
     handleUpdateDevicesToReturn(data){
       this.$emit('returnDevices', data);
-      // this.$emit('passEvent');
+      // this.$emit('passEvent'); // toggle modal
     },
     showComponent(componentName) {
       // Ustawia aktualny komponent na ten, który ma być widoczny
