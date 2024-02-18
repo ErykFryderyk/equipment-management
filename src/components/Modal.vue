@@ -68,7 +68,7 @@ export default {
     },
     handleUpdatePrinter(data) {
       this.$emit('updatePrinter', data);
-      this.$emit('passEvent'); // toggle modal
+      // this.$emit('passEvent'); // toggle modal
     },
     handleUpdateUsers(data) {
       this.$emit('updateUsersList', data);
