@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <Modal v-show="isModalActive" @pass-event="toggleModal" :component="currentComponent" @updateData="addUser"
-      @updateScanner="handleUpdateScanner" @updatePrinter="handleUpdatePrinter" @updateUsersList="handleUpdateUsers"
+      @updateScanner="addScanner" @updatePrinter="addPrinter" @updateUsersList="handleUpdateUsers"
       @assignDevicesToUser="assignDevices" @returnDevices="returnDevices" />
     <h1>Warehouse Manager</h1>
     <button @click="toggleModal('AddNewScanner')">Dodaj skaner</button>
@@ -12,8 +12,6 @@
     <button @click="toggleModal('ReturnDevice')">Zdawanie urządzeń</button>
     <div class="main-list">
       <div class="lists">
-        <input v-model="deviceToDelete" type="text" placeholder="Nazwa urządzenia">
-        <button @click="removePrinter(deviceToDelete)">Usuń urządzenie</button>
         <!-- LISTA Z UŻYTKOWIKAMI KTÓRZY MAJĄ JUZ PRZYSPISANE URZĄDZENIA -->
         <h2>In use</h2>
         <div>
@@ -78,6 +76,7 @@
                 <th>Serial Number</th>
                 <th>Added</th>
                 <th>In Use</th>
+                <th>To Delete</th>
               </tr>
             </thead>
             <tbody>
@@ -88,6 +87,9 @@
                 <td>{{ scanner.serialNumber }}</td>
                 <td>{{ scanner.date }}</td>
                 <td>{{ scanner.isInUse ? "Tak" : "Nie" }}</td>
+                <td>
+                  <button @click="deleteScanner(scanner.scannerID)">Delete</button>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -104,6 +106,7 @@
                 <th>Serial Number</th>
                 <th>Added</th>
                 <th>In Use</th>
+                <th>To Delete</th>
               </tr>
             </thead>
             <tbody>
@@ -114,6 +117,9 @@
                 <td>{{ printer.serialNumber }}</td>
                 <td>{{ printer.date }}</td>
                 <td>{{ printer.isInUse ? "Tak" : "Nie" }}</td>
+                <td>
+                  <button @click="deletePrinter(printer.printerID)">Delete</button>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -253,17 +259,6 @@ export default {
     }
   },
   methods: {
-    handleUpdateScanner(data) {
-      // Obsługa zdarzenia updateData z Modal, odbieramy dane
-      this.newScanner = data;
-      this.addScanner();
-    },
-    handleUpdatePrinter(data) {
-      // Obsługa zdarzenia updateData z Modal, odbieramy dane
-      this.newPrinter = data;
-      this.addPrinter();
-    },
-
     handleUpdateUsers(data) {
       // Obsługa zdarzenia updateUsers z Modal, odbieramy dane
       this.existingUser = data;
@@ -296,14 +291,19 @@ export default {
         alert('Użytkownik o podanym loginie nie istnieje.');
       }
     },
-    addScanner() {
+    addScanner(data) {
+      this.newScanner = data;
+      const index = this.scanners.findIndex((elName) => elName.scannerName === this.newScanner.scannerName);
+
       // Generowanie unikalnego userID
-      const maxID = Math.max(...this.scanners.map(user => user.scannerID));
+      const maxID = Math.max(...this.scanners.map(el => el.scannerID));
       const newID = maxID + 1;
 
       // Walidacja formularza
       if (this.newScanner.model === '') {
         alert("Wybierz model skanera")
+      } else if (index !== -1) {
+        alert("Taki skaner juz istnieje!");
       } else {
         // Dodajwanie skanera do tablicy
         this.scanners.push({
@@ -320,33 +320,33 @@ export default {
         this.newScanner.serialNumber = '';
       }
     },
-    removeScanner() {
-      const indexToRemove = this.scanners.findIndex((scanner) => scanner.scannerName === this.deviceToDelete);
-      console.log(indexToRemove);
-      if (indexToRemove !== -1) {
-        this.scanners.splice(indexToRemove, 1);
-        this.deviceToDelete = null
-      } else {
-        alert('Urządzenie nie istnieje');
+    deleteScanner(scannerID) {
+      console.log(scannerID);
+      if (confirm("Are you sure?")) {
+        // Find the index of the scanner with the given ID
+        const scanner = this.scanners.find(el => el.scannerID === scannerID);
+        const index = this.scanners.findIndex(scanner => scanner.scannerID === scannerID);
+        // Remove the scanner from the array
+        if (index !== -1 && !scanner.isInUse) {
+          this.scanners.splice(index, 1);
+        } else {
+          alert("Nie znaleziono scannera lub jest w uzyciu");
+        }
       }
     },
-    removePrinter() {
-      const indexToRemove = this.printers.findIndex((printer) => printer.printerName === this.deviceToDelete);
-      if (indexToRemove !== -1) {
-        this.printers.splice(indexToRemove, 1);
-        this.deviceToDelete = null
-      } else {
-        alert('Urządzenie nie istnieje');
-      }
-    },
-    addPrinter() {
+    addPrinter(data) {
+      this.newPrinter = data;
+      const index = this.printers.findIndex((elName) => elName.printerName === this.newPrinter.printerName);
+
       // Generowanie unikalnego userID
-      const maxID = Math.max(...this.printers.map(user => user.printerID));
+      const maxID = Math.max(...this.printers.map(el => el.printerID));
       const newID = maxID + 1;
 
       //Walidacja formuarza
       if (this.newPrinter.model === '') {
         alert("Wybierz model drukarki")
+      } else if (index !== -1) {
+        alert("Taka drukarka juz istnieje!");
       } else {
         // Dodawanie obiektu do tablicy
         this.printers.push({
@@ -361,6 +361,20 @@ export default {
         this.newPrinter.printerName = '';
         this.newPrinter.model = '';
         this.newPrinter.serialNumber = '';
+      }
+    },
+    deletePrinter(printerID) {
+      console.log(printerID);
+      if (confirm("Are you sure?")) {
+        // Find the index of the scanner with the given ID
+        const printer = this.printers.find(el => el.scannerID === printerID);
+        const index = this.printers.findIndex(printer => printer.printerID === printerID);
+        // Remove the scanner from the array
+        if (index !== -1 && !printer.isInUse) {
+          this.printers.splice(index, 1);
+        } else {
+          alert("Nie znaleziono drukarki lub jest w uzyciu :(");
+        }
       }
     },
     assignDevices(data) {
