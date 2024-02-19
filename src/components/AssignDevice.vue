@@ -53,10 +53,10 @@ export default {
       if (!this.userLoginError && !this.scannerNameError && !this.printerNameError) {
         // this.$emit('returnDevices', [login,scannerName,printerName]);
         this.$emit('assignDevices', this.formData);
+        this.formData.user = '';
+        this.formData.scanner = '';
+        this.formData.printer = '';
       };
-
-
-
     }
   }
 }
