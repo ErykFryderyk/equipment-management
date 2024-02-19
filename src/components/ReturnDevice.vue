@@ -33,9 +33,9 @@ export default {
   data() {
     return {
       formData: {
-        userLogin: 'grzkos',
-        selectedScanner: 'kon1s001',
-        selectedPrinter: 'kon1l001',
+        userLogin: '',
+        selectedScanner: '',
+        selectedPrinter: '',
       },
       userLoginError: false,
       scannerNameError: false,
@@ -62,6 +62,9 @@ export default {
       // Sprawdzenie, czy wszystkie warunki walidacji są spełnione...
       if (!this.userLoginError && !this.scannerNameError && !this.printerNameError) {
         this.$emit('returnDevices', [login,scannerName,printerName]);
+        this.formData.userLogin = '';
+        this.formData.selectedPrinter = '';
+        this.formData.selectedScanner = '';
       };
     }
   }
