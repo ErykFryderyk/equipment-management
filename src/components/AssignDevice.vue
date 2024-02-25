@@ -31,7 +31,13 @@ export default {
         user: 'KAMKOW',
         scanner: 'KON1S002',
         printer: 'KON1L002',
-      }
+      },
+      userLoginError: null,
+      userLoginEmptyError: null,
+      scannerNameError: null,
+      scannerNameEmptyError: null,
+      printerNameError: null,
+      printerNameEmptyError: null,
     }
   },
   methods: {

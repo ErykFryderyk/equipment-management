@@ -40,6 +40,9 @@ export default {
       userLoginError: false,
       scannerNameError: false,
       printerNameError: false,
+      userLoginEmptyError: false,
+      scannerNameEmptyError: false,
+      printerNameEmptyError: false,
     }
   },
   methods: {
