@@ -40,7 +40,7 @@ export default {
       },
       nameValid: false,
       modelValid: false,
-      serialNumber: false,
+      serialValid: false,
     }
   },
   watch: {
