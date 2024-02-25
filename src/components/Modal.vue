@@ -43,8 +43,7 @@ export default {
   },
   props: {
     component: {
-      type: Object,
-      required: true,
+      type: String,
     },
   },
   methods: {
