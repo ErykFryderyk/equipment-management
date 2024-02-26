@@ -47,6 +47,7 @@
 
         <div v-if="activeTab === 'users'">
           <h2>Lista użytkowników</h2>
+          <input type="text" placeholder="Szukaj...">
           <table>
             <thead>
               <tr>
@@ -321,7 +322,6 @@ export default {
       }
     },
     deleteScanner(scannerID) {
-      console.log(scannerID);
       if (confirm("Are you sure?")) {
         // Find the index of the scanner with the given ID
         const scanner = this.scanners.find(el => el.scannerID === scannerID);
@@ -330,7 +330,7 @@ export default {
         if (index !== -1 && !scanner.isInUse) {
           this.scanners.splice(index, 1);
         } else {
-          alert("Nie znaleziono scannera lub jest w uzyciu");
+          alert("Skaner jest juz w uzyciu!");
         }
       }
     },
@@ -364,16 +364,15 @@ export default {
       }
     },
     deletePrinter(printerID) {
-      console.log(printerID);
       if (confirm("Are you sure?")) {
-        // Find the index of the scanner with the given ID
-        const printer = this.printers.find(el => el.scannerID === printerID);
+        // Find the index of the printer with the given ID
+        const printer = this.printers.find(el => el.printerID === printerID);
         const index = this.printers.findIndex(printer => printer.printerID === printerID);
         // Remove the scanner from the array
         if (index !== -1 && !printer.isInUse) {
           this.printers.splice(index, 1);
         } else {
-          alert("Nie znaleziono drukarki lub jest w uzyciu :(");
+          alert("Drukarka jest juz w uzyciu!");
         }
       }
     },
