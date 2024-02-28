@@ -1,6 +1,7 @@
 <template>
   <div class="overlay" @click="someEvent">
     <div class="modal">
+      {{ clearInputs }}
       <!-- <button @click="showComponent('addNewScanner')">Pokaż Komponent 1</button> -->
       <!-- <button @click="showComponent('addNewPrinter')">Pokaż Komponent 2</button> -->
 
@@ -75,7 +76,6 @@ export default {
     },
     handleUpdateDevicesToAssign(data){
       this.$emit('assignDevicesToUser', data);
-      // Do poprawki bo nawet po błędnym wpisaniu danych zamyka modal a ponwinien posostac aktywny do ponownego wpisania danych
       // this.$emit('passEvent');  // toggle modal
     },
     // handleUpdateDevicesToReturn(data){
