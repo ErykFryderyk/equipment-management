@@ -1,8 +1,14 @@
 <template>
   <div class="app-container">
-    <Modal v-show="isModalActive" @pass-event="toggleModal" :component="currentComponent" @updateData="addUser"
-      @updateScanner="addScanner" @updatePrinter="addPrinter" @updateUsersList="handleUpdateUsers"
-      @assignDevicesToUser="assignDevices" @returnDevices="returnDevices" />
+    <Modal v-show="isModalActive" 
+      @pass-event="toggleModal" 
+      :component="currentComponent"
+      @updateData="addUser"
+      @updateScanner="addScanner" 
+      @updatePrinter="addPrinter" 
+      @updateUsersList="handleUpdateUsers"
+      @assignDevicesToUser="assignDevices" 
+      @returnDevices="returnDevices" />
     <h1>Warehouse Manager</h1>
     <button @click="toggleModal('AddNewScanner')">Dodaj skaner</button>
     <button @click="toggleModal('AddNewPrinter')">Dodaj drukarkę</button>
@@ -68,6 +74,7 @@
 
         <div v-if="activeTab === 'scanners'">
           <h2>Lista skanerów</h2>
+          <button @click="toggleModal('AddNewScanner')">Dodaj skaner</button>
           <table>
             <thead>
               <tr>
@@ -97,6 +104,7 @@
         </div>
 
         <div v-if="activeTab === 'printers'">
+          <button @click="toggleModal('AddNewPrinter')">Dodaj drukarkę</button>
           <h2>Lista drukarek</h2>
           <table>
             <thead>
@@ -143,12 +151,8 @@ export default {
     return {
       //Testowa tabela do zakładek 
       activeTab: 'users',
-      userLogin: null, // Pole formularza - login użytkownika
-      selectedScanner: null, // Pole formularza - wybrany skaner
-      selectedPrinter: null, // Pole formularza - wybrana drukarka
       isModalActive: false,
       existingUser: '', // zmienna do usunięcia urzytkownika
-      deviceToDelete: null, // zmienna do usuwania urządzenia
       currentComponent: null, // Przechowuje aktualny widoczny komponent
 
       usersWithDevices: [
@@ -284,17 +288,23 @@ export default {
         return;
       }
     },
-    removeUserByLogin(login) {
-      const index = this.users.findIndex((u) => u.login === this.existingUser);
-      if (index !== -1) {
-        this.users.splice(index, 1);
+    removeUserByLogin() {
+      const userName = this.existingUser.toUpperCase();
+      const index = this.users.findIndex((u) => u.login === userName);
+      const userIsWorking = this.usersWithDevices.findIndex(u => u.login === userName);
+
+      if (userIsWorking !== -1) {
+        alert('Użytkownik nie zdał urządzeń');
+      } else if (index === -1) {
+        alert('Użytkownik o podanym loginie nie istnieje');
       } else {
-        alert('Użytkownik o podanym loginie nie istnieje.');
+        //usuwanie z tablicy userWithDevices
+        this.users.splice(index, 1);
       }
     },
     addScanner(data) {
       this.newScanner = data;
-      const index = this.scanners.findIndex((elName) => elName.scannerName === this.newScanner.scannerName);
+      const index = this.scanners.findIndex((elName) => elName.scannerName === this.newScanner.scannerName.toUpperCase());
 
       // Generowanie unikalnego userID
       const maxID = Math.max(...this.scanners.map(el => el.scannerID));
@@ -336,7 +346,7 @@ export default {
     },
     addPrinter(data) {
       this.newPrinter = data;
-      const index = this.printers.findIndex((elName) => elName.printerName === this.newPrinter.printerName);
+      const index = this.printers.findIndex((elName) => elName.printerName === this.newPrinter.printerName.toUpperCase());
 
       // Generowanie unikalnego userID
       const maxID = Math.max(...this.printers.map(el => el.printerID));
@@ -421,6 +431,9 @@ export default {
       // Dodanie użytkownika do tablicy
       this.usersWithDevices.push(newUser);
 
+      // przekazywanie propsa do czyszczenia inputów
+
+
       // Zresetowanie pól formularza
       this.userLogin = '';
       this.selectedScanner = '';
@@ -444,10 +457,10 @@ export default {
           this.scanners.find(s => s.scannerName === scanner).isInUse = false;
           this.printers.find(p => p.printerName === printer).isInUse = false;
         } else {
-          console.error('Te urzadzenia nie są przypisane do tego uzytkownia')
+          alert('Te urzadzenia nie są przypisane do tego uzytkownia')
         }
       } else {
-        console.error('Użytkownik nie istnieje w tablicy.');
+        alert('Użytkownik nie istnieje w tablicy.');
       }
     },
     //aktywowanie/dezaktywacja modal z odpowiednią zawartością
