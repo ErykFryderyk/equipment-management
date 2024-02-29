@@ -11,9 +11,18 @@
       <span v-if="printerNameError" class="error">Nazwa drukarki musi zawierać "KON1L".</span>
       <span v-if="printerNameEmptyError" class="error">Nazwa drukarki nie może być pusta.</span>
 
-      <input type="text" maxlength="6" v-model="formData.user" placeholder="Login pracownika">
-      <input type="text" maxlength="8" v-model="formData.scanner" placeholder="Nazwa skanera">
-      <input type="text" maxlength="8" v-model="formData.printer" placeholder="Nazwa drukarka">
+      <div class="search">
+        <input type="text" required="" autocomplete="off" maxlength="6" v-model="formData.user">
+        <label for="name">Login Pracownika</label>
+      </div>
+      <div class="search">
+        <input type="text" required="" autocomplete="off" maxlength="8" v-model="formData.scanner">
+        <label for="name">Nazwa Skanera</label>
+      </div>
+      <div class="search">
+        <input type="text" required="" autocomplete="off" maxlength="8" v-model="formData.printer">
+        <label for="name">Nazwa Drukarki</label>
+      </div>
       <button type="submit">Przydziel urządzenie</button>
     </form>
     <!-- <div class="timer"> -->
@@ -28,9 +37,9 @@ export default {
   data() {
     return {
       formData: {
-        user: 'KAMKOW',
-        scanner: 'KON1S002',
-        printer: 'KON1L002',
+        user: '',
+        scanner: '',
+        printer: '',
       },
       userLoginError: null,
       userLoginEmptyError: null,
@@ -57,11 +66,11 @@ export default {
       // Walidacja formularza
       // Sprawdzenie, czy wszystkie warunki walidacji są spełnione...
       if (!this.userLoginError && !this.scannerNameError && !this.printerNameError) {
+        this.formData.user = login;
+        this.formData.scanner = scannerName;
+        this.formData.printer = printerName;
         // this.$emit('returnDevices', [login,scannerName,printerName]);
         this.$emit('assignDevices', this.formData);
-        this.formData.user = '';
-        this.formData.scanner = '';
-        this.formData.printer = '';
       };
     }
   }
