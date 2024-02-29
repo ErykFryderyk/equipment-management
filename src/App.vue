@@ -8,11 +8,9 @@
       @updatePrinter="addPrinter" 
       @updateUsersList="handleUpdateUsers"
       @assignDevicesToUser="assignDevices" 
-      @returnDevices="returnDevices" />
+      @returnDevices="returnDevices" 
+    />
     <h1>Warehouse Manager</h1>
-    <button @click="toggleModal('AddNewScanner')">Dodaj skaner</button>
-    <button @click="toggleModal('AddNewPrinter')">Dodaj drukarkę</button>
-    <button @click="toggleModal('AddNewUser')">Dodaj uzytkownika</button>
     <button @click="toggleModal('RemoveUser')">Usuń uzytkownika</button>
     <button @click="toggleModal('AssignDevice')">Wydawanie urządzeń</button>
     <button @click="toggleModal('ReturnDevice')">Zdawanie urządzeń</button>
@@ -46,14 +44,29 @@
     <div class="main-list">
       <div class="lists">
         <div class="tabs">
-          <button @click="activeTab = 'users'" :class="{ 'active': activeTab === 'users' }">Użytkownicy</button>
-          <button @click="activeTab = 'scanners'" :class="{ 'active': activeTab === 'scanners' }">Skanery</button>
-          <button @click="activeTab = 'printers'" :class="{ 'active': activeTab === 'printers' }">Drukarki</button>
+          <div class="radio-inputs">
+            <label class="radio" @click="activeTab = 'users'">
+              <input type="radio" name="radio" checked="">
+              <span class="name">Pracownicy</span>
+            </label>
+            <label class="radio" @click="activeTab = 'scanners'">
+              <input type="radio" name="radio">
+              <span class="name">Skanery</span>
+            </label>
+            <label class="radio" @click="activeTab = 'printers'">
+              <input type="radio" name="radio">
+              <span class="name">Drukarki</span>
+            </label>
+          </div>
         </div>
 
         <div v-if="activeTab === 'users'">
-          <h2>Lista użytkowników</h2>
-          <input type="text" placeholder="Szukaj...">
+          <h2>Pracownicy</h2>
+          <div class="search">
+            <input type="text" required="" autocomplete="off">
+            <label for="name">Name</label>
+          </div>
+          <button @click="toggleModal('AddNewUser')">Dodaj pracownika</button>
           <table>
             <thead>
               <tr>
@@ -73,7 +86,11 @@
         </div>
 
         <div v-if="activeTab === 'scanners'">
-          <h2>Lista skanerów</h2>
+          <h2>Skanery</h2>
+          <div class="search">
+            <input type="text" required="" autocomplete="off">
+            <label for="name">Name</label>
+          </div>
           <button @click="toggleModal('AddNewScanner')">Dodaj skaner</button>
           <table>
             <thead>
@@ -104,8 +121,12 @@
         </div>
 
         <div v-if="activeTab === 'printers'">
+          <h2>Drukarki</h2>
+          <div class="search">
+            <input type="text" required="" autocomplete="off">
+            <label for="name">Name</label>
+          </div>
           <button @click="toggleModal('AddNewPrinter')">Dodaj drukarkę</button>
-          <h2>Lista drukarek</h2>
           <table>
             <thead>
               <tr>
@@ -473,6 +494,18 @@ export default {
 </script>
 
 <style lang="scss">
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap');
+
+*,*::after,*::before{
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body{
+  font-family: "Roboto", sans-serif;
+  background-color: #f2f2f2;
+}
 /* Dodaj stylizację zakładek i treści według potrzeb */
 .tabs {
   display: flex;
@@ -480,10 +513,20 @@ export default {
 
 button {
   cursor: pointer;
+  border-radius: 0.5rem;
+  border: 1px solid #aaa;
+  background-color: #fbfbfb;
+  box-sizing: border-box;
+  color: rgba(51, 65, 85, 1);
   padding: 10px;
-  margin-right: 10px;
-  border: 1px solid #ddd;
-  background-color: #f2f2f2;
+  font-size: 14px;
+}
+
+input {
+  width: 200px;
+  padding: 10px;
+  border: 1px solid #aaaaaa;
+  background-color: #fff;
 }
 
 button.active {
@@ -503,8 +546,6 @@ li {
   margin-bottom: 5px;
 }
 
-
-
 /* Dodaj stylizację według potrzeb */
 table {
   width: 100%;
@@ -516,13 +557,10 @@ td {
   border: 1px solid #ddd;
   padding: 8px;
   text-align: left;
+  font-family: "Lato", sans-serif;
 }
 
 th {
-  background-color: #f2f2f2;
-}
-
-body {
   background-color: #f2f2f2;
 }
 
@@ -557,5 +595,85 @@ ul {
 
 li {
   margin-bottom: 20px;
+}
+
+// TABS
+.radio-inputs {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  border-radius: 0.5rem;
+  background-color: #EEE;
+  box-sizing: border-box;
+  box-shadow: 0 0 0px 1px rgba(0, 0, 0, 0.06);
+  padding: 0.25rem;
+  width: 300px;
+  font-size: 14px;
+}
+
+.radio-inputs .radio {
+  flex: 1 1 auto;
+  text-align: center;
+}
+
+.radio-inputs .radio input {
+  display: none;
+}
+
+.radio-inputs .radio .name {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  border: none;
+  padding: .5rem 0;
+  color: rgba(51, 65, 85, 1);
+  transition: all .15s ease-in-out;
+}
+
+.radio-inputs .radio input:checked + .name {
+  background-color: #fff;
+  font-weight: 600;
+}
+
+// SEARCH INPUT
+.search {
+  margin: 1em 0 1em 0;
+  max-width: 190px;
+  position: relative;
+}
+
+.search input {
+  font-size: 100%;
+  padding: 0.8em;
+  outline: none;
+  border: 2px solid rgb(200, 200, 200);
+  background-color: transparent;
+  border-radius: 10px;
+  width: 100%;
+}
+
+.search label {
+  font-size: 100%;
+  position: absolute;
+  left: 0;
+  padding: 0.8em;
+  margin-left: 0.5em;
+  pointer-events: none;
+  transition: all 0.3s ease;
+  color: rgb(100, 100, 100);
+}
+
+.search :is(input:focus, input:valid)~label {
+  transform: translateY(-50%) scale(.9);
+  margin: 0em;
+  margin-left: 1.3em;
+  padding: 0.4em;
+  background-color: #fff;
+}
+
+.search :is(input:focus, input:valid) {
+  border-color: #686868;
 }
 </style>
