@@ -1,17 +1,19 @@
 <template>
   <div>
     <!-- DODAWANIE NOWEGO UŻYTKOWNIKA -->
-    <h2>Dodaj nowego użytkownika</h2>
+    <h2>Dodawanie Nowego Pracownika</h2>
     <form @submit.prevent="addUser">
       <span v-if="!loginValid" style="color: red;">Login musi mieć dokładnie 6 znaków. (JANKOW)</span><br>
-      <span v-if="!nameValid" style="color: red;">Imię i nazwisko nie mogą być dłuższe niż 50 znaków.</span>
-      <div>
-        <label for="login">Login:</label>
-        <input type="text" id="login" maxlength="6" v-model="newUser.login" :style="{ color: loginValid ? 'green' : 'red' }" />
+      <span v-if="!nameValid" style="color: red;">Imię i nazwisko nie mogą być dłuższe niż 40 znaków.</span>
+    
+      <div class="search" style="margin-top: 20px">
+        <input type="text" maxlength="6" v-model="newUser.login" required="" autocomplete="off">
+        <label>Login Pracownika</label>
       </div>
-      <div>
-        <label for="name">Imię i nazwisko:</label>
-        <input type="text" id="name" v-model="newUser.name" :style="{ color: nameValid ? 'green' : 'red' }" />
+
+      <div class="search">
+        <input type="text" maxlength="40" v-model="newUser.name" required="" autocomplete="off">
+        <label>Imię i Nazwisko</label>
       </div>
       <button type="submit">Dodaj użytkownika</button>
     </form>
@@ -24,8 +26,8 @@ export default {
   data() {
     return {
       newUser: {
-        login: 'DARDAR',
-        name: 'Darek Darecki',
+        login: '',
+        name: '',
       },
       loginValid: true,
       nameValid: true,

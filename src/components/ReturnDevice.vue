@@ -11,10 +11,22 @@
       <span v-if="printerNameError" class="error">Nazwa drukarki musi zawierać "KON1L".</span>
       <span v-if="printerNameEmptyError" class="error">Nazwa drukarki nie może być pusta.</span>
 
-      <input type="text" maxlength="6" v-model="formData.userLogin" placeholder="Login pracownika">
-      <input type="text" maxlength="8" v-model="formData.selectedScanner" placeholder="Nazwa skanera">
-      <input type="text" maxlength="8" v-model="formData.selectedPrinter" placeholder="Nazwa Drukarka">
-      <button type="submit">Zwróć urządzenia</button>
+      <!-- <input type="text" maxlength="6" v-model="formData.userLogin" placeholder="Login pracownika"> -->
+      <div class="search">
+        <input type="text" maxlength="6" v-model="formData.userLogin" required="" autocomplete="off">
+        <label for="name">Login Pracownika</label>
+      </div>
+      <!-- <input type="text" maxlength="8" v-model="formData.selectedScanner" placeholder="Nazwa skanera"> -->
+      <div class="search">
+        <input type="text" maxlength="8" v-model="formData.selectedScanner" required="" autocomplete="off">
+        <label for="name">Nazwa Skanera</label>
+      </div>
+      <!-- <input type="text" maxlength="8" v-model="formData.selectedPrinter" placeholder="Nazwa Drukarka"> -->
+      <div class="search">
+        <input type="text" maxlength="8" v-model="formData.selectedPrinter" required="" autocomplete="off">
+        <label for="name">Nazwa Drukarki</label>
+      </div>
+      <button type="submit">Usuń Pracownika</button>
     </form>
     <!-- <div class="timer"> -->
     <!-- <ProgressBar/> -->
@@ -65,10 +77,12 @@ export default {
       // Sprawdzenie, czy wszystkie warunki walidacji są spełnione...
       if (!this.userLoginError && !this.scannerNameError && !this.printerNameError) {
         this.$emit('returnDevices', [login,scannerName,printerName]);
-        this.formData.userLogin = '';
-        this.formData.selectedPrinter = '';
-        this.formData.selectedScanner = '';
       };
+    },
+     clearInputs() {
+      this.formData.login = '';
+      this.formData.scanner = '';
+      this.formData.printer = '';
     }
   }
 }

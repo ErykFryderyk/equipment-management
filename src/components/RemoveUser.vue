@@ -4,13 +4,14 @@
     <h2>Usuń użytkownika</h2>
     <form @submit.prevent="removeUserByLogin">
       <span v-if="!loginValid" style="color: red;">Login musi mieć dokładnie 6 znaków. (np. JANKOW)</span><br>
-      <div>
-        <label for="login">Login:</label>
-        <input type="text" maxlength="6" id="login" v-model="existingUser" />
+      <span style="color: red;">Login musi mieć dokładnie 6 znaków. (np. JANWOJ)</span>
+      <div class="search">
+        <input type="text" maxlength="6" id="login" v-model="existingUser" required="" autocomplete="off">
+        <label for="name">Login</label>
       </div>
-      <div>
-        <label for="password">Hasło:</label>
-        <input type="password" id="password" v-model="passwordToRemoveUser"/>
+      <div class="search">
+        <input type="password" maxlength="6" id="password" v-model="passwordToRemoveUser" required="" autocomplete="off">
+        <label for="name">Hasło Admina</label>
       </div>
       <button type="submit">Usuń użytkownika</button>
     </form>
@@ -61,5 +62,10 @@ input {
 .error {
   color: red;
   font-size: 12px;
+}
+.doth{
+  width: 5px;
+  height: 5px;
+  background-color: #a8a8a8;
 }
 </style>

@@ -1,14 +1,16 @@
 <template>
   <div>
-    <h2>Dodaj skaner</h2>
+    <h2>Dodawanie Skanera</h2>
     <form @submit.prevent="addScanner">
       <span v-if="!nameValid" style="color: red;">Nazwa musi zawierać 8 znaków.</span>
       <span v-if="!modelValid" style="color: red;">Pole "Model" nie moze byc puste</span>
       <span v-if="!serialValid" style="color: red;">Numer seryjny do wypełnienia</span>
-      <div>
-        <label for="scannerName" :style="{ color: nameValid ? 'green' : 'red' }">Scanner Name:</label>
-        <input type="text" id="scannerName" maxlength="10" placeholder="KON1S001" v-model="scanner.scannerName"/>
+
+      <div class="search" style="margin-top: 20px">
+        <input type="text" maxlength="8" v-model="scanner.scannerName" required="" autocomplete="off">
+        <label :style="{ color: nameValid ? 'green' : 'gray' }">Nazwa Skanera</label>
       </div>
+
       <div>
         <label for="model" :style="{ color: modelValid ? 'green' : 'red' }">Model:</label>
         <select id="model" v-model="scanner.model">
@@ -19,11 +21,12 @@
           <option value="MC67">MC67</option>
         </select>
       </div>
-      <div>
-        <label for="scannerSerialNumber" :style="{ color: serialValid ? 'green' : 'red' }">Serial Number:</label>
-        <input type="text" id="scannerSerialNumber" placeholder="S7265638782641" v-model="scanner.serialNumber" />
+
+      <div class="search">
+        <input type="text" v-model="scanner.serialNumber" required="" autocomplete="off">
+        <label :style="{ color: nameValid ? 'green' : 'gray' }">Numer Seryjny</label>
       </div>
-      <button type="submit">Dodaj skaner</button>
+      <button type="submit">DODAJ</button>
     </form>
   </div>
 </template>
@@ -34,7 +37,7 @@ export default {
   data() {
     return {
       scanner: {
-        scannerName: '',
+        scannerName: 'KON1S',
         model: '',
         serialNumber: '',
       },
