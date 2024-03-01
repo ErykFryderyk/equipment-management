@@ -11,13 +11,22 @@
       @returnDevices="returnDevices" 
     />
     <h1>Warehouse Manager</h1>
-    <button @click="toggleModal('RemoveUser')">Usuń uzytkownika</button>
-    <button @click="toggleModal('AssignDevice')">Wydawanie urządzeń</button>
-    <button @click="toggleModal('ReturnDevice')">Zdawanie urządzeń</button>
-    <div class="main-list">
+    <!-- <div class="buttons-box">
+      <button @click="toggleModal('AssignDevice')">Wydawanie urządzeń</button>
+      <button @click="toggleModal('ReturnDevice')">Zdawanie urządzeń</button>
+    </div> -->
+      <div class="main-list">
       <div class="lists">
         <!-- LISTA Z UŻYTKOWIKAMI KTÓRZY MAJĄ JUZ PRZYSPISANE URZĄDZENIA -->
-        <h2>In use</h2>
+        <h2>Aktywni Pracownicy</h2>
+        <div class="buttons-box">
+          <div class="search">
+              <input type="text" id="search" required="" autocomplete="off">
+              <label for="search">Wyszukaj</label>
+          </div>
+          <button @click="toggleModal('AssignDevice')">Wydaj urządzenie</button>
+          <button @click="toggleModal('ReturnDevice')">Zwróć urządzenie</button>
+        </div>
         <div>
           <table>
             <thead>
@@ -62,24 +71,27 @@
 
         <div v-if="activeTab === 'users'">
           <h2>Pracownicy</h2>
-          <div class="search">
-            <input type="text" required="" autocomplete="off">
-            <label for="name">Name</label>
+          <div class="search-container long-container">
+            <div class="search">
+              <input type="text" id="search" required="" autocomplete="off">
+              <label for="search">Wyszukaj</label>
+            </div>
+            <button @click="toggleModal('AddNewUser')">Dodaj pracownika</button>
+            <button @click="toggleModal('RemoveUser')">Usuń uzytkownika</button>
           </div>
-          <button @click="toggleModal('AddNewUser')">Dodaj pracownika</button>
           <table>
             <thead>
               <tr>
                 <th style="width:20px">Lp.</th>
-                <th>Name</th>
                 <th>Login</th>
+                <th>Pracownik</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(user, index) in users" :key="index">
                 <td>{{ index + 1 }}</td>
-                <td>{{ user.name }}</td>
                 <td>{{ user.login }}</td>
+                <td>{{ user.name }}</td>
               </tr>
             </tbody>
           </table>
@@ -87,11 +99,13 @@
 
         <div v-if="activeTab === 'scanners'">
           <h2>Skanery</h2>
-          <div class="search">
-            <input type="text" required="" autocomplete="off">
-            <label for="name">Name</label>
+          <div class="search-container">
+            <div class="search">
+              <input type="text" required="" autocomplete="off">
+              <label for="name">Wyszukaj</label>
+            </div>
+            <button @click="toggleModal('AddNewScanner')">Dodaj skaner</button>
           </div>
-          <button @click="toggleModal('AddNewScanner')">Dodaj skaner</button>
           <table>
             <thead>
               <tr>
@@ -113,7 +127,7 @@
                 <td>{{ scanner.date }}</td>
                 <td>{{ scanner.isInUse ? "Tak" : "Nie" }}</td>
                 <td>
-                  <button @click="deleteScanner(scanner.scannerID)">Delete</button>
+                  <button class="small-btn" @click="deleteScanner(scanner.scannerID)">Delete</button>
                 </td>
               </tr>
             </tbody>
@@ -122,11 +136,13 @@
 
         <div v-if="activeTab === 'printers'">
           <h2>Drukarki</h2>
-          <div class="search">
-            <input type="text" required="" autocomplete="off">
-            <label for="name">Name</label>
+          <div class="search-container">
+            <div class="search">
+              <input type="text" required="" autocomplete="off">
+              <label for="name">Wyszukaj</label>
+            </div>
+            <button @click="toggleModal('AddNewPrinter')">Dodaj drukarkę</button>
           </div>
-          <button @click="toggleModal('AddNewPrinter')">Dodaj drukarkę</button>
           <table>
             <thead>
               <tr>
@@ -148,7 +164,7 @@
                 <td>{{ printer.date }}</td>
                 <td>{{ printer.isInUse ? "Tak" : "Nie" }}</td>
                 <td>
-                  <button @click="deletePrinter(printer.printerID)">Delete</button>
+                  <button class="small-btn" @click="deletePrinter(printer.printerID)">Delete</button>
                 </td>
               </tr>
             </tbody>
@@ -511,6 +527,12 @@ body{
   display: flex;
 }
 
+.buttons-box{
+  width: 500px;
+  margin: 0 auto 15px auto;
+  display: flex;
+  justify-content: space-between;
+}
 button {
   cursor: pointer;
   border-radius: 0.5rem;
@@ -520,6 +542,11 @@ button {
   color: rgba(51, 65, 85, 1);
   padding: 10px;
   font-size: 14px;
+  font-weight: 600;
+}
+.small-btn{
+  padding: 1px 6px;
+  font-size: 13px;
 }
 
 input {
@@ -567,6 +594,17 @@ th {
 .app-container {
   text-align: center;
   padding: 20px;
+}
+.search-container{
+  width: 340px;
+  margin: 0 auto 15px auto;
+  display: flex;
+  align-items: center;  
+  justify-content: space-around;
+}
+
+.long-container{
+  width: 500px;
 }
 
 h1 {
@@ -639,14 +677,13 @@ li {
 
 // SEARCH INPUT
 .search {
-  margin: 1em 0 1em 0;
   max-width: 190px;
   position: relative;
 }
 
 .search input {
   font-size: 100%;
-  padding: 0.8em;
+  padding: 0.5em;
   outline: none;
   border: 2px solid rgb(200, 200, 200);
   background-color: transparent;
@@ -658,7 +695,7 @@ li {
   font-size: 100%;
   position: absolute;
   left: 0;
-  padding: 0.8em;
+  padding: 0.6em;
   margin-left: 0.5em;
   pointer-events: none;
   transition: all 0.3s ease;
@@ -666,9 +703,9 @@ li {
 }
 
 .search :is(input:focus, input:valid)~label {
-  transform: translateY(-50%) scale(.9);
+  transform: translateY(-60%) scale(.9);
   margin: 0em;
-  margin-left: 1.3em;
+  margin-left: 0.8em;
   padding: 0.4em;
   background-color: #fff;
 }
