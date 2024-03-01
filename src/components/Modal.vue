@@ -1,10 +1,6 @@
 <template>
   <div class="overlay" @click="someEvent">
     <div class="modal">
-      {{ clearInputs }}
-      <!-- <button @click="showComponent('addNewScanner')">Pokaż Komponent 1</button> -->
-      <!-- <button @click="showComponent('addNewPrinter')">Pokaż Komponent 2</button> -->
-
       <!-- Wyświetlanie odpowiedniego komponentu w zależności od aktualnego stanu -->
       <component 
         :is="component" 
@@ -109,14 +105,15 @@ export default {
 }
 
 .modal {
-  width: 300px;
+  width: 500px;
   min-height: 300px;
   background-color: #fff;
   box-shadow: 0 0 10px 0px #000;
   border-radius: 5px;
+  padding: 30px 15px;
 
   @media (min-width: 520px) {
-    width: 500px;
+    width: 600px;
     min-height: 500px;
 
   }
