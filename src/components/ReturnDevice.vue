@@ -12,7 +12,7 @@
       <span v-if="printerNameEmptyError" class="error">Nazwa drukarki nie może być pusta.</span>
 
       <!-- <input type="text" maxlength="6" v-model="formData.userLogin" placeholder="Login pracownika"> -->
-      <div class="search">
+      <div class="search" style="margin-top:20px;">
         <input type="text" maxlength="6" v-model="formData.userLogin" required="" autocomplete="off">
         <label for="name">Login Pracownika</label>
       </div>

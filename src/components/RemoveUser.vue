@@ -5,7 +5,7 @@
     <form @submit.prevent="removeUserByLogin">
       <span v-if="!loginValid" style="color: red;">Login musi mieć dokładnie 6 znaków. (np. JANKOW)</span><br>
       <span style="color: red;">Login musi mieć dokładnie 6 znaków. (np. JANWOJ)</span>
-      <div class="search">
+      <div class="search" style="margin-top:20px">
         <input type="text" maxlength="6" id="login" v-model="existingUser" required="" autocomplete="off">
         <label for="name">Login</label>
       </div>

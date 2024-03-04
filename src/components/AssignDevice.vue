@@ -11,7 +11,7 @@
       <span v-if="printerNameError" class="error">Nazwa drukarki musi zawierać "KON1L".</span>
       <span v-if="printerNameEmptyError" class="error">Nazwa drukarki nie może być pusta.</span>
 
-      <div class="search">
+      <div class="search" style="margin-top: 20px;">
         <input type="text" required="" autocomplete="off" maxlength="6" v-model="formData.user">
         <label for="name">Login Pracownika</label>
       </div>
