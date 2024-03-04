@@ -10,7 +10,7 @@
       @assignDevicesToUser="assignDevices" 
       @returnDevices="returnDevices" 
     />
-    <h1>Warehouse Manager</h1>
+    <h1>Magazyn - Zarządzanie Urządzeniami</h1>
     <!-- <div class="buttons-box">
       <button @click="toggleModal('AssignDevice')">Wydawanie urządzeń</button>
       <button @click="toggleModal('ReturnDevice')">Zdawanie urządzeń</button>
