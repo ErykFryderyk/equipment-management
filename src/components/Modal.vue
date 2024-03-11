@@ -1,6 +1,12 @@
 <template>
   <div class="overlay" @click="someEvent">
     <div class="modal">
+      <AlertInfo :class="{active: alertIsActive}">
+        {{ alertText }}
+      </AlertInfo>
+      <SuccessInfo :class="{active: successAlertIsActive}">
+        {{ alertText }}
+      </SuccessInfo>
       <!-- Wyświetlanie odpowiedniego komponentu w zależności od aktualnego stanu -->
       <component 
         :is="component" 
@@ -10,6 +16,8 @@
         @removeUser="handleUpdateUsers"
         @assignDevices="handleUpdateDevicesToAssign"
         @returnDevices="handleUpdateDevicesToReturn"
+        @alertEvent="showAlert"
+        @successAlertEvent="showSuccessAlert"
       />
     </div>
   </div>
@@ -22,6 +30,8 @@ import AddNewUser from './AddNewUser.vue'
 import RemoveUser from './RemoveUser.vue'
 import AssignDevice from './AssignDevice.vue'
 import ReturnDevice from './ReturnDevice.vue'
+import AlertInfo from './AlertInfo.vue'
+import SuccessInfo from './SuccessInfo.vue'
 
 export default {
   name: 'Modal',
@@ -32,10 +42,15 @@ export default {
     RemoveUser,
     AssignDevice,
     ReturnDevice,
-  },
+    AlertInfo,
+    SuccessInfo
+},
   data() {
     return {
       currentComponent: null,
+      alertIsActive: false,
+      successAlertIsActive: false,
+      alertText: '',
     };
   },
   props: {
@@ -52,6 +67,22 @@ export default {
       } else {
         return;
       }
+    },
+    showAlert(text){
+      this.alertIsActive = true;
+      this.alertText = text;
+      setTimeout(() => {
+        this.alertIsActive = false;
+        this.alertText = '';
+      }, "4000");
+    },
+    showSuccessAlert(text) {
+      this.successAlertIsActive = true;
+      this.alertText = text;
+      setTimeout(() => {
+        this.successAlertIsActive = false;
+        this.alertText = '';
+      }, "4000");
     },
     handleUpdateData(data) {
       // Otrzymujemy dane z AddNewUser i przekazujemy do komponentu rodzica
@@ -105,17 +136,18 @@ export default {
 }
 
 .modal {
+  position: relative;
   width: 500px;
   min-height: 300px;
   background-color: #fff;
   box-shadow: 0 0 10px 0px #000;
   border-radius: 5px;
   padding: 30px 15px;
+  overflow: hidden;
 
   @media (min-width: 520px) {
     width: 600px;
     min-height: 500px;
-
   }
 }
 </style>
