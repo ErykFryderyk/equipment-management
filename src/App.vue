@@ -114,6 +114,7 @@
                 <th>Model</th>
                 <th>Serial Number</th>
                 <th>Added</th>
+                <th>Gwarancja</th>
                 <th>In Use</th>
                 <th>To Delete</th>
               </tr>
@@ -125,6 +126,7 @@
                 <td>{{ scanner.model }}</td>
                 <td>{{ scanner.serialNumber }}</td>
                 <td>{{ scanner.date }}</td>
+                <td>{{ scanner.warranty ? "Tak" : "Nie" }}</td>
                 <td>{{ scanner.isInUse ? "Tak" : "Nie" }}</td>
                 <td>
                   <button class="small-btn" @click="deleteScanner(scanner.scannerID)">Delete</button>
@@ -151,6 +153,7 @@
                 <th>Model</th>
                 <th>Serial Number</th>
                 <th>Added</th>
+                <th>Gwarancja</th>
                 <th>In Use</th>
                 <th>To Delete</th>
               </tr>
@@ -162,6 +165,7 @@
                 <td>{{ printer.model }}</td>
                 <td>{{ printer.serialNumber }}</td>
                 <td>{{ printer.date }}</td>
+                <td>{{ printer.warranty ? "Tak" : "Nie" }}</td>
                 <td>{{ printer.isInUse ? "Tak" : "Nie" }}</td>
                 <td>
                   <button class="small-btn" @click="deletePrinter(printer.printerID)">Delete</button>
@@ -251,6 +255,7 @@ export default {
           scannerID: 1,
           scannerName: 'KON1S001',
           isInUse: true,
+          warranty: true,
           model: 'TC52',
           serialNumber: 'S129281239123',
           date: '10-10-2023',
@@ -259,6 +264,7 @@ export default {
           scannerID: 2,
           scannerName: 'KON1S002',
           isInUse: false,
+          warranty: true,
           model: 'TC52',
           serialNumber: 'S129281239123',
           date: '10-10-2023',
@@ -267,6 +273,7 @@ export default {
           scannerID: 3,
           scannerName: 'KON1S069',
           isInUse: true,
+          warranty: true,
           model: 'TC52',
           serialNumber: 'S129281239123',
           date: '10-10-2023',
@@ -277,24 +284,27 @@ export default {
           printerID: 1,
           printerName: 'KON1L001',
           isInUse: true,
+          warranty: true,
           model: 'QLn620',
-          serialNumber: '123123123',
+          serialNumber: 'XXX123123123',
           date: '10-10-2023',
         },
         {
           printerID: 2,
           printerName: 'KON1L002',
           isInUse: false,
+          warranty: true,
           model: 'QLn620',
-          serialNumber: '123123123',
+          serialNumber: 'XXX123123123',
           date: '10-10-2023',
         },
         {
           printerID: 3,
           printerName: 'KON1L069',
           isInUse: true,
+          warranty: true,
           model: 'QLn620',
-          serialNumber: '123123123',
+          serialNumber: 'XXX123123123',
           date: '10-10-2023',
         },
       ]
