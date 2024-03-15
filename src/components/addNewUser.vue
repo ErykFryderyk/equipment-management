@@ -7,8 +7,7 @@
         <span
           class="correct" 
           :class="{ 'correct--active': loginValid }"
-          >
-        </span>
+        ></span>
         <p class="valid-text">Login musi mieć dokładnie 6 znaków (np. JANKOW)</p>
       </div>
       <div style="display: flex; align-items: center;">
@@ -19,13 +18,13 @@
         </span>
         <p class="valid-text">Imię i nazwisko nie dłuższe niż 40 znaków</p>
       </div>
-      <div class="search" style="margin-top: 20px">
+      <div class="form-text-field" style="margin-top: 20px">
         <input type="text" maxlength="6" v-model="newUser.login" required="">
-        <label>Login Pracownika</label>
+        <label :style="{ color: loginValid ? 'green' : 'gray' }">Login Pracownika</label>
       </div>
-      <div class="search">
+      <div class="form-text-field">
         <input type="text" maxlength="40" v-model="newUser.name" required="">
-        <label>Imię i Nazwisko</label>
+        <label :style="{ color: nameValid ? 'green' : 'gray' }">Imię i Nazwisko</label>
       </div>
       <button type="submit">Dodaj użytkownika</button>
     </form>
@@ -94,6 +93,45 @@ input {
 .valid-text{
   color: #858585;
   font-size: 14px;
+}
+
+// FORM INPUT
+.form-text-field {
+  width: 100%;
+  position: relative;
+}
+
+.form-text-field input {
+  font-size: 100%;
+  padding: 0.5em;
+  outline: none;
+  border: 2px solid rgb(200, 200, 200);
+  background-color: transparent;
+  border-radius: 10px;
+  width: 100%;
+}
+
+.form-text-field label {
+  font-size: 100%;
+  position: absolute;
+  left: 0;
+  padding: 0.6em;
+  margin-left: 0.5em;
+  pointer-events: none;
+  transition: all 0.3s ease;
+  color: rgb(100, 100, 100);
+}
+
+.form-text-field :is(input:focus, input:valid)~label {
+  transform: translateY(-60%) scale(.9);
+  margin: 0em;
+  margin-left: 0.8em;
+  padding: 0.4em;
+  background-color: #fff;
+}
+
+.form-text-field :is(input:focus, input:valid) {
+  border-color: #686868;
 }
 
 .correct{
