@@ -4,24 +4,38 @@
     <h2>Wydawanie urządzeń</h2>
     <form @submit.prevent="assignDevices">
       <!-- error messages -->
-      <span v-if="userLoginError" class="error">Login musi zawierać 6 znaków.</span>
+      <div style="display: flex; align-items: center;">
+        <span
+          class="correct" 
+          :class="{ 'correct--active': userLoginError }"
+        ></span>
+        <p class="valid-text">Login musi zawierać 6 znaków</p>
+      </div>
+      <div style="display: flex; align-items: center;">
+        <span
+          class="correct" 
+          :class="{ 'correct--active': scannerNameError }"
+        ></span>
+        <p class="valid-text">Nazwa skanera musi zawierać "KON1S***"</p>
+      </div>
+      <!-- <span v-if="userLoginError" class="error">Login musi zawierać 6 znaków.</span> -->
       <span v-if="userLoginEmptyError" class="error">Login nie może być pusty.</span>
       <span v-if="scannerNameError" class="error">Nazwa skanera musi zawierać "KON1S***".</span>
       <span v-if="scannerNameEmptyError" class="error">Nazwa skanera nie może być pusta.</span>
       <span v-if="printerNameError" class="error">Nazwa drukarki musi zawierać "KON1L".</span>
       <span v-if="printerNameEmptyError" class="error">Nazwa drukarki nie może być pusta.</span>
 
-      <div class="search" style="margin-top: 20px;">
+      <div class="form-text-field" style="margin-top: 20px;">
         <input type="text" required="" autocomplete="off" maxlength="6" v-model="formData.user">
-        <label for="name">Login Pracownika</label>
+        <label for="name" :style="{color: userLoginError ? 'green' : 'gray'}">Login Pracownika</label>
       </div>
-      <div class="search">
+      <div class="form-text-field">
         <input type="text" required="" autocomplete="off" maxlength="8" v-model="formData.scanner">
-        <label for="name">Nazwa Skanera</label>
+        <label for="name" :style="{color: scannerNameError ? 'green' : 'gray'}">Nazwa Skanera</label>
       </div>
-      <div class="search">
+      <div class="form-text-field">
         <input type="text" required="" autocomplete="off" maxlength="8" v-model="formData.printer">
-        <label for="name">Nazwa Drukarki</label>
+        <label for="name" :style="{color: printerNameError ? 'green' : 'gray'}">Nazwa Drukarki</label>
       </div>
       <button type="submit">Przydziel urządzenie</button>
     </form>
@@ -48,6 +62,14 @@ export default {
       printerNameError: null,
       printerNameEmptyError: null,
     }
+  },
+  watch: {
+    'formData.user': function (newVal) {
+      this.userLoginError = newVal.length === 6 && /^[a-zA-Z]+$/.test(newVal);
+    },
+    'formData.scanner': function (newVal) {
+      this.scannerNameError = newVal.length === 8 && newVal.toUpperCase().includes('KON1S');
+    },
   },
   methods: {
     assignDevices() {
@@ -86,8 +108,87 @@ form {
   flex-direction: column;
 }
 
+.correct{
+  width: 10px;
+  height: 10px;
+  margin-right: 5px;
+  border-radius: 50px;
+  border: 1px solid gray;
+  background-color: transparent;
+  transition: background-color .3s ease-in-out, border .3s ease-in-out;
+
+  &--active{
+    position: relative;
+    border: 1px solid gray;
+    background-color: #63bd63;
+
+    &::after{
+      position: absolute;
+      content: '';
+      width: 10px;
+      height: 10px;
+      border: 1px solid green;
+      border-radius: 50px;
+      background-color: transparent;
+      transform: translate(-50%, -50%);
+      left: 50%;
+      top:50%;
+      animation: dissolve 0.4s ease forwards;
+    }
+  }
+
+  @keyframes dissolve {
+    0% {
+      opacity: 100%;
+    }
+    100% {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(3);
+    }
+  }
+}
+
 input {
   margin-bottom: 30px;
+}
+
+// FORM INPUT
+.form-text-field {
+  width: 100%;
+  position: relative;
+}
+
+.form-text-field input {
+  font-size: 100%;
+  padding: 0.5em;
+  outline: none;
+  border: 2px solid rgb(200, 200, 200);
+  background-color: transparent;
+  border-radius: 10px;
+  width: 100%;
+}
+
+.form-text-field label {
+  font-size: 100%;
+  position: absolute;
+  left: 0;
+  padding: 0.6em;
+  margin-left: 0.5em;
+  pointer-events: none;
+  transition: all 0.3s ease;
+  color: rgb(100, 100, 100);
+}
+
+.form-text-field :is(input:focus, input:valid)~label {
+  transform: translateY(-60%) scale(.9);
+  margin: 0em;
+  margin-left: 0.8em;
+  padding: 0.4em;
+  background-color: #fff;
+}
+
+.form-text-field :is(input:focus, input:valid) {
+  border-color: #686868;
 }
 
 .error {
