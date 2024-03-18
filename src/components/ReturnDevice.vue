@@ -4,9 +4,30 @@
     <h2>Zdawanie urządzeń</h2>
     <form @submit.prevent="returnDevices">
       <!-- error messages -->
-      <span v-if="userLoginError" class="error">Login musi mieć co najmniej 6 znaków.</span>
+      <div style="display: flex; align-items: center;">
+        <span
+          class="correct" 
+          :class="{ 'correct--active': userLoginError }"
+        ></span>
+        <p class="valid-text">Login musi zawierać 6 znaków</p>
+      </div>
+      <div style="display: flex; align-items: center;">
+        <span
+          class="correct" 
+          :class="{ 'correct--active': scannerNameError }"
+        ></span>
+        <p class="valid-text">Nazwa skanera musi zawierać "KON1S***"</p>
+      </div>
+      <div style="display: flex; align-items: center;">
+        <span
+          class="correct" 
+          :class="{ 'correct--active': printerNameError }"
+        ></span>
+        <p class="valid-text">Nazwa drukarki musi zawierać "KON1L***"</p>
+      </div>
+      <!-- <span v-if="userLoginError" class="error">Login musi mieć co najmniej 6 znaków.</span> -->
       <span v-if="userLoginEmptyError" class="error">Login nie może być pusty.</span>
-      <span v-if="scannerNameError" class="error">Nazwa skanera musi zawierać "KON1S".</span>
+      <!-- <span v-if="scannerNameError" class="error">Nazwa skanera musi zawierać "KON1S".</span> -->
       <span v-if="scannerNameEmptyError" class="error">Nazwa skanera nie może być pusta.</span>
       <span v-if="printerNameError" class="error">Nazwa drukarki musi zawierać "KON1L".</span>
       <span v-if="printerNameEmptyError" class="error">Nazwa drukarki nie może być pusta.</span>
@@ -14,17 +35,17 @@
       <!-- <input type="text" maxlength="6" v-model="formData.userLogin" placeholder="Login pracownika"> -->
       <div class="form-text-field" style="margin-top:20px;">
         <input type="text" maxlength="6" v-model="formData.userLogin" required="" autocomplete="off">
-        <label for="name">Login Pracownika</label>
+        <label for="name" :style="{color: userLoginError ? 'green' : 'gray'}">Login Pracownika</label>
       </div>
       <!-- <input type="text" maxlength="8" v-model="formData.selectedScanner" placeholder="Nazwa skanera"> -->
       <div class="form-text-field">
         <input type="text" maxlength="8" v-model="formData.selectedScanner" required="" autocomplete="off">
-        <label for="name">Nazwa Skanera</label>
+        <label for="name" :style="{color: userLoginError ? 'green' : 'gray'}">Nazwa Skanera</label>
       </div>
       <!-- <input type="text" maxlength="8" v-model="formData.selectedPrinter" placeholder="Nazwa Drukarka"> -->
       <div class="form-text-field">
         <input type="text" maxlength="8" v-model="formData.selectedPrinter" required="" autocomplete="off">
-        <label for="name">Nazwa Drukarki</label>
+        <label for="name" :style="{color: userLoginError ? 'green' : 'gray'}">Nazwa Drukarki</label>
       </div>
       <button type="submit">Usuń Pracownika</button>
     </form>
@@ -49,13 +70,24 @@ export default {
         selectedScanner: '',
         selectedPrinter: '',
       },
-      userLoginError: false,
+      userLoginError: null,
       scannerNameError: false,
       printerNameError: false,
       userLoginEmptyError: false,
       scannerNameEmptyError: false,
       printerNameEmptyError: false,
     }
+  },
+  watch: {
+    'formData.userLogin': function (newVal) {
+      this.userLoginError = newVal.length === 6 && /^[a-zA-Z]+$/.test(newVal);
+    },
+    'formData.selectedScanner': function (newVal) {
+      this.scannerNameError = newVal.length === 8 && newVal.toUpperCase().includes('KON1S');
+    },
+    'formData.selectedPrinter': function (newVal) {
+      this.printerNameError = newVal.length === 8 && newVal.toUpperCase().includes('KON1L');
+    },
   },
   methods: {
     returnDevices() {
@@ -95,6 +127,49 @@ form {
   justify-content: center;
   align-items: space-between;
   flex-direction: column;
+}
+.valid-text{
+  color: #858585;
+  font-size: 14px;
+}
+.correct{
+  width: 10px;
+  height: 10px;
+  margin-right: 5px;
+  border-radius: 50px;
+  border: 1px solid gray;
+  background-color: transparent;
+  transition: background-color .3s ease-in-out, border .3s ease-in-out;
+
+  &--active{
+    position: relative;
+    border: 1px solid gray;
+    background-color: #63bd63;
+
+    &::after{
+      position: absolute;
+      content: '';
+      width: 10px;
+      height: 10px;
+      border: 1px solid green;
+      border-radius: 50px;
+      background-color: transparent;
+      transform: translate(-50%, -50%);
+      left: 50%;
+      top:50%;
+      animation: dissolve 0.4s ease forwards;
+    }
+  }
+
+  @keyframes dissolve {
+    0% {
+      opacity: 100%;
+    }
+    100% {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(3);
+    }
+  }
 }
 
 input {
