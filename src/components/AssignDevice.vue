@@ -25,11 +25,8 @@
         ></span>
         <p class="valid-text">Nazwa drukarki musi zawierać "KON1L***"</p>
       </div>
-      <!-- <span v-if="userLoginError" class="error">Login musi zawierać 6 znaków.</span> -->
       <span v-if="userLoginEmptyError" class="error">Login nie może być pusty.</span>
-      <!-- <span v-if="scannerNameError" class="error">Nazwa skanera musi zawierać "KON1S***".</span> -->
       <span v-if="scannerNameEmptyError" class="error">Nazwa skanera nie może być pusta.</span>
-      <!-- <span v-if="printerNameError" class="error">Nazwa drukarki musi zawierać "KON1L".</span> -->
       <span v-if="printerNameEmptyError" class="error">Nazwa drukarki nie może być pusta.</span>
 
       <div class="form-text-field" style="margin-top: 20px;">
@@ -63,11 +60,8 @@ export default {
         printer: '',
       },
       userLoginError: null,
-      userLoginEmptyError: null,
       scannerNameError: null,
-      scannerNameEmptyError: null,
       printerNameError: null,
-      printerNameEmptyError: null,
     }
   },
   watch: {
@@ -88,21 +82,20 @@ export default {
       const printerName = this.formData.printer.toUpperCase();
 
       // Walidacja przed zwróceniem urządzeń
-      this.userLoginError = login.length < 5;
-      this.userLoginEmptyError = login === ''
-      this.scannerNameError = !scannerName.includes('KON1S');
-      this.scannerNameEmptyError = scannerName === '';
-      this.printerNameError = !printerName.includes('KON1L');
-      this.printerNameEmptyError = printerName === '';
+      this.userLoginError = login.length === 6;
+      this.scannerNameError = scannerName.includes('KON1S') && scannerName.length === 8;
+      this.printerNameError = printerName.includes('KON1L') && printerName.length === 8;
 
       // Walidacja formularza
       // Sprawdzenie, czy wszystkie warunki walidacji są spełnione...
-      if (!this.userLoginError && !this.scannerNameError && !this.printerNameError) {
+      if (this.userLoginError && this.scannerNameError && this.printerNameError) {
         this.formData.user = login;
         this.formData.scanner = scannerName;
         this.formData.printer = printerName;
         // this.$emit('returnDevices', [login,scannerName,printerName]);
         this.$emit('assignDevices', this.formData);
+      } else {
+        alert("Musisz wypełnić wszystkie pola!")
       };
     }
   }
