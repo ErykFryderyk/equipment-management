@@ -12,17 +12,17 @@
       <span v-if="printerNameEmptyError" class="error">Nazwa drukarki nie może być pusta.</span>
 
       <!-- <input type="text" maxlength="6" v-model="formData.userLogin" placeholder="Login pracownika"> -->
-      <div class="search" style="margin-top:20px;">
+      <div class="form-text-field" style="margin-top:20px;">
         <input type="text" maxlength="6" v-model="formData.userLogin" required="" autocomplete="off">
         <label for="name">Login Pracownika</label>
       </div>
       <!-- <input type="text" maxlength="8" v-model="formData.selectedScanner" placeholder="Nazwa skanera"> -->
-      <div class="search">
+      <div class="form-text-field">
         <input type="text" maxlength="8" v-model="formData.selectedScanner" required="" autocomplete="off">
         <label for="name">Nazwa Skanera</label>
       </div>
       <!-- <input type="text" maxlength="8" v-model="formData.selectedPrinter" placeholder="Nazwa Drukarka"> -->
-      <div class="search">
+      <div class="form-text-field">
         <input type="text" maxlength="8" v-model="formData.selectedPrinter" required="" autocomplete="off">
         <label for="name">Nazwa Drukarki</label>
       </div>
@@ -99,6 +99,45 @@ form {
 
 input {
   margin-bottom: 30px;
+}
+
+// FORM INPUT
+.form-text-field {
+  width: 100%;
+  position: relative;
+}
+
+.form-text-field input {
+  font-size: 100%;
+  padding: 0.5em;
+  outline: none;
+  border: 2px solid rgb(200, 200, 200);
+  background-color: transparent;
+  border-radius: 10px;
+  width: 100%;
+}
+
+.form-text-field label {
+  font-size: 100%;
+  position: absolute;
+  left: 0;
+  padding: 0.6em;
+  margin-left: 0.5em;
+  pointer-events: none;
+  transition: all 0.3s ease;
+  color: rgb(100, 100, 100);
+}
+
+.form-text-field :is(input:focus, input:valid)~label {
+  transform: translateY(-60%) scale(.9);
+  margin: 0em;
+  margin-left: 0.8em;
+  padding: 0.4em;
+  background-color: #fff;
+}
+
+.form-text-field :is(input:focus, input:valid) {
+  border-color: #686868;
 }
 
 .error {
