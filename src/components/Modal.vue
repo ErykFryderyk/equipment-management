@@ -1,9 +1,9 @@
 <template>
   <div class="overlay" @click="someEvent">
     <div class="modal">
-      <AlertInfo :class="{active: alertIsActive}">
+      <ErrorAlert :class="{active: alertIsActive}">
         {{ alertText }}
-      </AlertInfo>
+      </ErrorAlert>
       <SuccessInfo :class="{active: successAlertIsActive}">
         {{ alertText }}
       </SuccessInfo>
@@ -30,7 +30,7 @@ import AddNewUser from './AddNewUser.vue'
 import RemoveUser from './RemoveUser.vue'
 import AssignDevice from './AssignDevice.vue'
 import ReturnDevice from './ReturnDevice.vue'
-import AlertInfo from './AlertInfo.vue'
+import ErrorAlert from './ErrorAlert.vue'
 import SuccessInfo from './SuccessInfo.vue'
 
 export default {
@@ -42,7 +42,7 @@ export default {
     RemoveUser,
     AssignDevice,
     ReturnDevice,
-    AlertInfo,
+    ErrorAlert,
     SuccessInfo
 },
   data() {
