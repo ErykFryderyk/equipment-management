@@ -21,8 +21,8 @@
         <h2>Aktywni Pracownicy</h2>
         <div class="buttons-box">
           <div class="search">
-              <input type="text" id="search" required="" autocomplete="off">
-              <label for="search">Wyszukaj</label>
+              <input type="text" id="search-tabel1" required="" autocomplete="off">
+              <label for="search-table1">Wyszukaj</label>
           </div>
           <button @click="toggleModal('AssignDevice')">Wydaj urządzenie</button>
           <button @click="toggleModal('ReturnDevice')">Zwróć urządzenie</button>
@@ -32,9 +32,10 @@
             <thead>
               <tr>
                 <th style="width:20px">Lp.</th>
-                <th>Users</th>
-                <th>Printers</th>
-                <th>Scanners</th>
+                <th>Login</th>
+                <th>Skaner</th>
+                <th>Drukarka</th>
+                <th>Data wydania</th>
               </tr>
             </thead>
             <tbody>
@@ -43,6 +44,7 @@
                 <td>{{ element.login }}</td>
                 <td>{{ element.assignedScanner }}</td>
                 <td>{{ element.assignedPrinter }}</td>
+                <td>{{ element.date }}</td>
               </tr>
             </tbody>
           </table>
@@ -54,16 +56,16 @@
       <div class="lists">
         <div class="tabs">
           <div class="radio-inputs">
-            <label class="radio" @click="activeTab = 'users'">
-              <input type="radio" name="radio" checked="">
+            <label class="radio" >
+              <input type="radio" @click="activeTab = 'users'" name="radio" checked="">
               <span class="name">Pracownicy</span>
             </label>
-            <label class="radio" @click="activeTab = 'scanners'">
-              <input type="radio" name="radio">
+            <label class="radio">
+              <input type="radio" @click="activeTab = 'scanners'" name="radio">
               <span class="name">Skanery</span>
             </label>
-            <label class="radio" @click="activeTab = 'printers'">
-              <input type="radio" name="radio">
+            <label class="radio">
+              <input type="radio" @click="activeTab = 'printers'" name="radio">
               <span class="name">Drukarki</span>
             </label>
           </div>
@@ -73,8 +75,8 @@
           <h2>Pracownicy</h2>
           <div class="search-container long-container">
             <div class="search">
-              <input type="text" id="search" required="" autocomplete="off">
-              <label for="search">Wyszukaj</label>
+              <input type="text" id="search-table2" required="" autocomplete="off">
+              <label for="search-table2">Wyszukaj</label>
             </div>
             <button @click="toggleModal('AddNewUser')">Dodaj pracownika</button>
             <button @click="toggleModal('RemoveUser')">Usuń uzytkownika</button>
@@ -85,6 +87,7 @@
                 <th style="width:20px">Lp.</th>
                 <th>Login</th>
                 <th>Pracownik</th>
+                <th>Opcje</th>
               </tr>
             </thead>
             <tbody>
@@ -92,6 +95,9 @@
                 <td>{{ index + 1 }}</td>
                 <td>{{ user.login }}</td>
                 <td>{{ user.name }}</td>
+                <td>
+                  <button class="small-btn">Edit</button>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -201,11 +207,13 @@ export default {
           login: 'GRZKOS',
           assignedScanner: 'KON1S069',
           assignedPrinter: 'KON1L069',
+          date: '10-10-2024 07:50',
         },
         {
           login: 'GREWIL',
           assignedScanner: 'KON1S001',
           assignedPrinter: 'KON1L001',
+          date: '10-10-2024 07:30',
         }
       ],
       //Data to add/remove 
