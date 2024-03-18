@@ -25,27 +25,19 @@
         ></span>
         <p class="valid-text">Nazwa drukarki musi zawierać "KON1L***"</p>
       </div>
-      <!-- <span v-if="userLoginError" class="error">Login musi mieć co najmniej 6 znaków.</span> -->
-      <span v-if="userLoginEmptyError" class="error">Login nie może być pusty.</span>
-      <!-- <span v-if="scannerNameError" class="error">Nazwa skanera musi zawierać "KON1S".</span> -->
-      <span v-if="scannerNameEmptyError" class="error">Nazwa skanera nie może być pusta.</span>
-      <span v-if="printerNameError" class="error">Nazwa drukarki musi zawierać "KON1L".</span>
-      <span v-if="printerNameEmptyError" class="error">Nazwa drukarki nie może być pusta.</span>
 
-      <!-- <input type="text" maxlength="6" v-model="formData.userLogin" placeholder="Login pracownika"> -->
+
       <div class="form-text-field" style="margin-top:20px;">
         <input type="text" maxlength="6" v-model="formData.userLogin" required="" autocomplete="off">
         <label for="name" :style="{color: userLoginError ? 'green' : 'gray'}">Login Pracownika</label>
       </div>
-      <!-- <input type="text" maxlength="8" v-model="formData.selectedScanner" placeholder="Nazwa skanera"> -->
       <div class="form-text-field">
         <input type="text" maxlength="8" v-model="formData.selectedScanner" required="" autocomplete="off">
-        <label for="name" :style="{color: userLoginError ? 'green' : 'gray'}">Nazwa Skanera</label>
+        <label for="name" :style="{color: scannerNameError ? 'green' : 'gray'}">Nazwa Skanera</label>
       </div>
-      <!-- <input type="text" maxlength="8" v-model="formData.selectedPrinter" placeholder="Nazwa Drukarka"> -->
       <div class="form-text-field">
         <input type="text" maxlength="8" v-model="formData.selectedPrinter" required="" autocomplete="off">
-        <label for="name" :style="{color: userLoginError ? 'green' : 'gray'}">Nazwa Drukarki</label>
+        <label for="name" :style="{color: printerNameError ? 'green' : 'gray'}">Nazwa Drukarki</label>
       </div>
       <button type="submit">Usuń Pracownika</button>
     </form>
@@ -70,14 +62,12 @@ export default {
         selectedScanner: '',
         selectedPrinter: '',
       },
-      userLoginError: null,
+
+      userLoginError: false,
       scannerNameError: false,
       printerNameError: false,
-      userLoginEmptyError: false,
-      scannerNameEmptyError: false,
-      printerNameEmptyError: false,
     }
-  },
+  },  
   watch: {
     'formData.userLogin': function (newVal) {
       this.userLoginError = newVal.length === 6 && /^[a-zA-Z]+$/.test(newVal);
@@ -91,31 +81,23 @@ export default {
   },
   methods: {
     returnDevices() {
-      // this.checkEmptyInput();
-
       const login = this.formData.userLogin.toUpperCase();
       const scannerName = this.formData.selectedScanner.toUpperCase();
       const printerName = this.formData.selectedPrinter.toUpperCase();
 
       // Walidacja przed zwróceniem urządzeń
-      this.userLoginError = login.length < 5;
-      this.userLoginEmptyError = login === ''
-      this.scannerNameError = !scannerName.includes('KON1S');
-      this.scannerNameEmptyError = scannerName === '';
-      this.printerNameError = !printerName.includes('KON1L');
-      this.printerNameEmptyError = printerName === '';
+      this.userLoginError = login.length == 6;
+      this.scannerNameError = scannerName.includes('KON1S') && scannerName.length === 8;
+      this.printerNameError = printerName.includes('KON1L') && printerName.length === 8;
 
       // Walidacja formularza
       // Sprawdzenie, czy wszystkie warunki walidacji są spełnione...
-      if (!this.userLoginError && !this.scannerNameError && !this.printerNameError) {
+      if (this.userLoginError && this.scannerNameError && this.printerNameError) {
         this.$emit('returnDevices', [login,scannerName,printerName]);
+      } else {
+        alert('wypełnij poprawnie pola');
       };
     },
-     clearInputs() {
-      this.formData.login = '';
-      this.formData.scanner = '';
-      this.formData.printer = '';
-    }
   }
 }
 </script>
