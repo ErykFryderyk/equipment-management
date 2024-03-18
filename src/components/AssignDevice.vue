@@ -18,11 +18,18 @@
         ></span>
         <p class="valid-text">Nazwa skanera musi zawierać "KON1S***"</p>
       </div>
+      <div style="display: flex; align-items: center;">
+        <span
+          class="correct" 
+          :class="{ 'correct--active': printerNameError }"
+        ></span>
+        <p class="valid-text">Nazwa drukarki musi zawierać "KON1L***"</p>
+      </div>
       <!-- <span v-if="userLoginError" class="error">Login musi zawierać 6 znaków.</span> -->
       <span v-if="userLoginEmptyError" class="error">Login nie może być pusty.</span>
-      <span v-if="scannerNameError" class="error">Nazwa skanera musi zawierać "KON1S***".</span>
+      <!-- <span v-if="scannerNameError" class="error">Nazwa skanera musi zawierać "KON1S***".</span> -->
       <span v-if="scannerNameEmptyError" class="error">Nazwa skanera nie może być pusta.</span>
-      <span v-if="printerNameError" class="error">Nazwa drukarki musi zawierać "KON1L".</span>
+      <!-- <span v-if="printerNameError" class="error">Nazwa drukarki musi zawierać "KON1L".</span> -->
       <span v-if="printerNameEmptyError" class="error">Nazwa drukarki nie może być pusta.</span>
 
       <div class="form-text-field" style="margin-top: 20px;">
@@ -70,6 +77,9 @@ export default {
     'formData.scanner': function (newVal) {
       this.scannerNameError = newVal.length === 8 && newVal.toUpperCase().includes('KON1S');
     },
+    'formData.printer': function (newVal) {
+      this.printerNameError = newVal.length === 8 && newVal.toUpperCase().includes('KON1L');
+    },
   },
   methods: {
     assignDevices() {
@@ -107,7 +117,10 @@ form {
   align-items: space-between;
   flex-direction: column;
 }
-
+.valid-text{
+  color: #858585;
+  font-size: 14px;
+}
 .correct{
   width: 10px;
   height: 10px;
