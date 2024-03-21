@@ -1,28 +1,22 @@
 <template>
   <div class="app-container">
-    <Modal v-show="isModalActive" 
-      @pass-event="toggleModal" 
-      :component="currentComponent"
-      @updateData="addUser"
-      @updateScanner="addScanner" 
-      @updatePrinter="addPrinter" 
-      @updateUsersList="handleUpdateUsers"
-      @assignDevicesToUser="assignDevices" 
-      @returnDevices="returnDevices" 
-    />
+    <Modal v-show="isModalActive" @pass-event="toggleModal" :component="currentComponent" @updateData="addUser"
+      @updateScanner="addScanner" @updatePrinter="addPrinter" @updateUsersList="handleUpdateUsers"
+      @assignDevicesToUser="assignDevices" @returnDevices="returnDevices" />
     <h1>Magazyn - Zarządzanie Urządzeniami</h1>
     <!-- <div class="buttons-box">
       <button @click="toggleModal('AssignDevice')">Wydawanie urządzeń</button>
       <button @click="toggleModal('ReturnDevice')">Zdawanie urządzeń</button>
     </div> -->
-      <div class="main-list">
+    <div class="main-list">
       <div class="lists">
         <!-- LISTA Z UŻYTKOWIKAMI KTÓRZY MAJĄ JUZ PRZYSPISANE URZĄDZENIA -->
         <h2>Aktywni Pracownicy</h2>
         <div class="buttons-box">
+          {{ searchActiveUsers }}
           <div class="search">
-              <input type="text" id="search-tabel1" required="" autocomplete="off">
-              <label for="search-table1">Wyszukaj</label>
+            <input type="text" id="search-tabel1" v-model.trim="searchActiveUsers" required="" autocomplete="off">
+            <label for="search-table1">Wyszukaj</label>
           </div>
           <button @click="toggleModal('AssignDevice')">Wydaj urządzenie</button>
           <button @click="toggleModal('ReturnDevice')">Zwróć urządzenie</button>
@@ -56,7 +50,7 @@
       <div class="lists">
         <div class="tabs">
           <div class="radio-inputs">
-            <label class="radio" >
+            <label class="radio">
               <input type="radio" @click="activeTab = 'users'" name="radio" checked="">
               <span class="name">Pracownicy</span>
             </label>
@@ -68,6 +62,10 @@
               <input type="radio" @click="activeTab = 'printers'" name="radio">
               <span class="name">Drukarki</span>
             </label>
+            <label class="radio">
+              <input type="radio" @click="activeTab = 'history'" name="radio">
+              <span class="name">Historia</span>
+            </label>
           </div>
         </div>
 
@@ -75,7 +73,7 @@
           <h2>Pracownicy</h2>
           <div class="search-container long-container">
             <div class="search">
-              <input type="text" id="search-table2" required="" autocomplete="off">
+              <input type="text" id="search-table2" v-model="searchUsers" required="" autocomplete="off">
               <label for="search-table2">Wyszukaj</label>
             </div>
             <button @click="toggleModal('AddNewUser')">Dodaj pracownika</button>
@@ -107,7 +105,7 @@
           <h2>Skanery</h2>
           <div class="search-container">
             <div class="search">
-              <input type="text" required="" autocomplete="off">
+              <input type="text" required="" v-model="searchScanners" autocomplete="off">
               <label for="name">Wyszukaj</label>
             </div>
             <button @click="toggleModal('AddNewScanner')">Dodaj skaner</button>
@@ -146,7 +144,7 @@
           <h2>Drukarki</h2>
           <div class="search-container">
             <div class="search">
-              <input type="text" required="" autocomplete="off">
+              <input type="text" required="" v-model="searchPrinters" autocomplete="off">
               <label for="name">Wyszukaj</label>
             </div>
             <button @click="toggleModal('AddNewPrinter')">Dodaj drukarkę</button>
@@ -180,6 +178,35 @@
             </tbody>
           </table>
         </div>
+        <div v-if="activeTab === 'history'">
+          <h2>Historia</h2>
+          <div class="search-container long-container">
+            <div class="search">
+              <input type="text" id="search-table2" v-model="searchHistory" required="" autocomplete="off">
+              <label for="search-table2">Wyszukaj</label>
+            </div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th style="width:20px">Lp.</th>
+                <th>Login</th>
+                <th>Urzadzenia</th>
+                <th>Zdał</th>
+                <th>Data</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(row, index) in historyTable" :key="index">
+                <td>{{ index + 1 }}</td>
+                <td>{{ row.login}}</td>
+                <td>{{ row.devices }}</td>
+                <td>{{ row.returned }}</td>
+                <td>{{ row.date }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
@@ -196,11 +223,16 @@ export default {
   },
   data() {
     return {
-      //Testowa tabela do zakładek 
-      activeTab: 'users',
+      //Testowa tabela do zakładek
       isModalActive: false,
+      activeTab: 'users', // default value for tabs praconicy/scanery/drukarki
       existingUser: '', // zmienna do usunięcia urzytkownika
-      currentComponent: null, // Przechowuje aktualny widoczny komponent
+      currentComponent: null, // variable for component to show in the modal
+      searchActiveUsers: '',
+      searchUsers: '',
+      searchScanners: '',
+      searchPrinters: '',
+      searchHistory: '',
 
       usersWithDevices: [
         {
@@ -215,6 +247,20 @@ export default {
           assignedPrinter: 'KON1L001',
           date: '10-10-2024 07:30',
         }
+      ],
+      historyTable: [
+        {
+          login: 'MARKOS',
+          devices: 'KON1S069, KON1L069',
+          returned: true,
+          date: '10-10-2024 07:50',
+        },
+        {
+          login: 'PAWELE',
+          devices: 'KON1S069, KON1L069',
+          returned: true,
+          date: '10-10-2024 07:50',
+        },
       ],
       //Data to add/remove 
       newUser: {
@@ -318,7 +364,22 @@ export default {
       ]
     }
   },
+  computed: {
+    usersWithDevices() {return this.filterTable(this.usersWithDevices, this.searchActiveUsers);},
+    users(){return this.filterTable(this.users, this.searchUsers);},
+    scanners(){return this.filterTable(this.scanners, this.searchScanners)},
+    printers(){return this.filterTable(this.printers, this.searchPrinters)},
+    historyTable(){return this.filterTable(this.historyTable, this.searchHistory)},
+  },
   methods: {
+    //searching method 
+    filterTable(table, searchValue) {
+      return table.filter(tab =>
+        Object.values(tab).some(value =>
+          typeof value === 'string' && value.toUpperCase().includes(searchValue.toUpperCase())
+        )
+      );
+    },
     handleUpdateUsers(data) {
       // Obsługa zdarzenia updateUsers z Modal, odbieramy dane
       this.existingUser = data;
@@ -531,26 +592,31 @@ export default {
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap');
 
-*,*::after,*::before{
+*,
+*::after,
+*::before {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
-body{
+
+body {
   font-family: "Roboto", sans-serif;
   background-color: #f2f2f2;
 }
+
 /* Dodaj stylizację zakładek i treści według potrzeb */
 .tabs {
   display: flex;
 }
 
-.buttons-box{
+.buttons-box {
   width: 500px;
   margin: 0 auto 15px auto;
   display: flex;
   justify-content: space-between;
 }
+
 button {
   cursor: pointer;
   border-radius: 0.5rem;
@@ -562,7 +628,8 @@ button {
   font-size: 14px;
   font-weight: 600;
 }
-.small-btn{
+
+.small-btn {
   padding: 1px 6px;
   font-size: 13px;
 }
@@ -613,15 +680,16 @@ th {
   text-align: center;
   padding: 20px;
 }
-.search-container{
+
+.search-container {
   width: 340px;
   margin: 0 auto 15px auto;
   display: flex;
-  align-items: center;  
+  align-items: center;
   justify-content: space-around;
 }
 
-.long-container{
+.long-container {
   width: 500px;
 }
 
@@ -688,7 +756,7 @@ li {
   transition: all .15s ease-in-out;
 }
 
-.radio-inputs .radio input:checked + .name {
+.radio-inputs .radio input:checked+.name {
   background-color: #fff;
   font-weight: 600;
 }
