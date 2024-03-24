@@ -78,7 +78,7 @@ export default {
       this.nameValid = newVal.length === 8;
     },
     'printer.model': function (newVal) {
-      this.modelValid = newVal.lenght !== 0;
+      this.modelValid = newVal.lenght !== 0 && newVal !== "";
     },
     'printer.serialNumber': function (newVal) {
       this.serialValid = newVal.length >= 12;

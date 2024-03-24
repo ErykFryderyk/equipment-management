@@ -32,7 +32,7 @@
       <div class="select-input">
         <label for="model" :style="{ color: modelValid ? 'green' : 'gray' }">Model</label>
         <select id="model" v-model="scanner.model">
-          <option value>--brak--</option>
+          <option value="">--brak--</option>
           <option value="TC52">TC52</option>
           <option value="MC33">MC33</option>
           <option value="MC55">MC55</option>
@@ -69,7 +69,7 @@ export default {
       this.nameValid = newVal.length === 8;
     },
     'scanner.model': function (newVal) {
-      this.modelValid = newVal.lenght !== 0;
+      this.modelValid = newVal.lenght !== 0 && newVal !== "";
     },
     'scanner.serialNumber': function (newVal) {
       this.serialValid = newVal.length >= 12;
