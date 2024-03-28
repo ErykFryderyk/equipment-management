@@ -9,11 +9,14 @@
       <button @click="toggleModal('ReturnDevice')">Zdawanie urządzeń</button>
     </div> -->
     <div class="main-list">
-      <div class="lists">
+      <div class="lists" :class="{ 'hide-active-users-list': hideActiveUsersList }">
+        <button class="wrap-button" @click="hideActiveUsersList = !hideActiveUsersList">
+          <span v-if="hideActiveUsersList">+</span>
+          <span v-else>-</span>
+        </button>
         <!-- LISTA Z UŻYTKOWIKAMI KTÓRZY MAJĄ JUZ PRZYSPISANE URZĄDZENIA -->
         <h2>Aktywni Pracownicy</h2>
         <div class="buttons-box">
-          {{ searchActiveUsers }}
           <div class="search">
             <input type="text" id="search-tabel1" v-model.trim="searchActiveUsers" required="" autocomplete="off">
             <label for="search-table1">Wyszukaj</label>
@@ -44,11 +47,14 @@
           </table>
         </div>
       </div>
-
     </div>
-    <div class="main-list">
+    <div class="main-list" :class="{ 'hide-data-lists': hideDataLists }">
       <div class="lists">
-        <div class="tabs">
+        <button class="wrap-button" @click="hideDataLists = !hideDataLists">
+          <span v-if="hideDataLists">+</span>
+          <span v-else>-</span>
+        </button>
+        <div class="tabs" v-show="!hideDataLists">
           <div class="radio-inputs">
             <label class="radio">
               <input type="radio" @click="activeTab = 'users'" name="radio" checked="">
@@ -199,7 +205,7 @@
             <tbody>
               <tr v-for="(row, index) in historyTable" :key="index">
                 <td>{{ index + 1 }}</td>
-                <td>{{ row.login}}</td>
+                <td>{{ row.login }}</td>
                 <td>{{ row.devices }}</td>
                 <td>{{ row.returned }}</td>
                 <td>{{ row.date }}</td>
@@ -233,6 +239,8 @@ export default {
       searchScanners: '',
       searchPrinters: '',
       searchHistory: '',
+      hideActiveUsersList: false,
+      hideDataLists: false,
 
       usersWithDevices: [
         {
@@ -365,11 +373,11 @@ export default {
     }
   },
   computed: {
-    usersWithDevices() {return this.filterTable(this.usersWithDevices, this.searchActiveUsers);},
-    users(){return this.filterTable(this.users, this.searchUsers);},
-    scanners(){return this.filterTable(this.scanners, this.searchScanners)},
-    printers(){return this.filterTable(this.printers, this.searchPrinters)},
-    historyTable(){return this.filterTable(this.historyTable, this.searchHistory)},
+    usersWithDevices() { return this.filterTable(this.usersWithDevices, this.searchActiveUsers); },
+    users() { return this.filterTable(this.users, this.searchUsers); },
+    scanners() { return this.filterTable(this.scanners, this.searchScanners) },
+    printers() { return this.filterTable(this.printers, this.searchPrinters) },
+    historyTable() { return this.filterTable(this.historyTable, this.searchHistory) },
   },
   methods: {
     //searching method 
@@ -627,11 +635,22 @@ button {
   padding: 10px;
   font-size: 14px;
   font-weight: 600;
+  transition: background-color .2s ease-in-out;
+
+  &:hover {
+    background-color: #e0e0e0;
+  }
 }
 
 .small-btn {
   padding: 1px 6px;
   font-size: 13px;
+}
+
+.wrap-button {
+  position: absolute;
+  right: 15px;
+  top: 10px;
 }
 
 input {
@@ -704,12 +723,20 @@ h1 {
 }
 
 .lists {
+  position: relative;
   flex: 1;
   background-color: #fff;
   border: 1px solid #ccc;
   padding: 20px;
   margin: 10px;
   border-radius: 5px;
+
+}
+
+.hide-active-users-list,
+.hide-data-lists {
+  max-height: 65px;
+  overflow: hidden;
 }
 
 ul {
@@ -798,5 +825,4 @@ li {
 
 .search :is(input:focus, input:valid) {
   border-color: #686868;
-}
-</style>
+}</style>
