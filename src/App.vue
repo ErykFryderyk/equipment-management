@@ -196,8 +196,8 @@
             <thead>
               <tr>
                 <th style="width:20px">Lp.</th>
-                <th>Login</th>
                 <th>Urzadzenia</th>
+                <th>Login</th>
                 <th>Zdał</th>
                 <th>Data</th>
               </tr>
@@ -205,8 +205,8 @@
             <tbody>
               <tr v-for="(row, index) in historyTable" :key="index">
                 <td>{{ index + 1 }}</td>
-                <td>{{ row.login }}</td>
                 <td>{{ row.devices }}</td>
+                <td>{{ row.login }}</td>
                 <td>{{ row.returned }}</td>
                 <td>{{ row.date }}</td>
               </tr>
@@ -549,13 +549,15 @@ export default {
       const newUser = {
         login: user.login,
         assignedScanner: scanner.scannerName,
-        assignedPrinter: printer.printerName
+        assignedPrinter: printer.printerName,
+        date: `${String(new Date().getDate()).padStart(2, '0')}-${String(new Date().getMonth() + 1).padStart(2, '0')}-${new Date().getFullYear()} ${String(new Date().getHours()).padStart(2, '0')}:${String(new Date().getMinutes()).padStart(2, '0')}`,
       };
 
       // Dodanie użytkownika do tablicy
       this.usersWithDevices.push(newUser);
 
       // przekazywanie propsa do czyszczenia inputów
+      // TO DO 
 
 
       // Zresetowanie pól formularza
