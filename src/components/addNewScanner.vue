@@ -54,6 +54,8 @@ export default {
   name: 'addScanner',
   data() {
     return {
+      errorText: 'Źle wypełnione pola w formularzu!',
+      successText: 'Nowy skaner został dodany!',
       scanner: {
         scannerName: 'KON1S',
         model: '',
@@ -80,8 +82,9 @@ export default {
       // Walidacja przed zwróceniem urządzeń
       if(this.nameValid && this.modelValid && this.serialValid) {
         this.$emit('addNewScanner', this.scanner);
+        this.$emit('successAlertEvent', this.successText);
       } else{
-        alert("wypełnij poprawnie pola");
+        this.$emit('alertEvent', this.errorText);
         return;
       }
     }

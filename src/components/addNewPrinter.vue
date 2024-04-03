@@ -63,6 +63,8 @@ export default {
   name: 'addNewPrinter',
   data() {
     return {
+      errorText: 'Źle wypełnione pola w formularzu!',
+      successText: 'Nowa drukarka został dodany!',
       printer: {
         printerName: 'KON1L',
         model: '',
@@ -89,8 +91,9 @@ export default {
       // Walidacja przed zwróceniem urządzeń
       if(this.nameValid && this.modelValid && this.serialValid) {
         this.$emit('addNewPrinter', this.printer);
+        this.$emit('successAlertEvent', this.successText);
       } else{
-        alert("wypełnij poprawnie wszytkie pola!");
+        this.$emit('alertEvent', this.errorText);
         return;
       }
     }

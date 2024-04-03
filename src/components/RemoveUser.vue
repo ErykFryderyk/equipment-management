@@ -29,6 +29,8 @@ export default {
   name: 'RemoveUser',
   data() {
     return {
+      errorText: 'Źle wypełnione pola w formularzu!',
+      successText: 'Uzytkownika został usunięty!',
       existingUser: '',
       loginValid: false,
       adminPassowrd: '1234',
@@ -44,9 +46,10 @@ export default {
     removeUserByLogin() {
       if (this.existingUser && this.adminPassowrd === this.passwordToRemoveUser) {
         this.$emit("removeUser", this.existingUser);
-        alert("coś sie dzieje");
+        this.$emit('successAlertEvent', this.successText);
       } else { 
-        alert("Hasło jest niepoprawne!");
+        this.$emit('alertEvent', this.errorText);
+        return;
       }
     }
   },

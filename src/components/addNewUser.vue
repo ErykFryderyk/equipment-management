@@ -37,7 +37,7 @@ export default {
   data() {
     return {
       errorText: 'Źle wypełnione pola w formularzu!',
-      successText: 'Nowy uzytkownik został dodany! ;)',
+      successText: 'Nowy uzytkownik został dodany!',
       newUser: {
         login: '',
         name: '',

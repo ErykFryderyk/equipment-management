@@ -39,7 +39,7 @@
         <input type="text" maxlength="8" v-model="formData.selectedPrinter" required="" autocomplete="off">
         <label for="name" :style="{color: printerNameError ? 'green' : 'gray'}">Nazwa Drukarki</label>
       </div>
-      <button type="submit">Usuń Pracownika</button>
+      <button type="submit">Zwróć urządzenia</button>
     </form>
     <!-- <div class="timer"> -->
     <!-- <ProgressBar/> -->
@@ -57,6 +57,8 @@ export default {
   },
   data() {
     return {
+      errorText: 'Źle wypełnione pola w formularzu!',
+      successText: 'Urządzenia zostały zwrócone!',
       formData: {
         userLogin: '',
         selectedScanner: '',
@@ -94,8 +96,10 @@ export default {
       // Sprawdzenie, czy wszystkie warunki walidacji są spełnione...
       if (this.userLoginError && this.scannerNameError && this.printerNameError) {
         this.$emit('returnDevices', [login,scannerName,printerName]);
+        this.$emit('successAlertEvent', this.successText);
       } else {
-        alert('wypełnij poprawnie pola');
+        this.$emit('alertEvent', this.errorText);
+        return;
       };
     },
   }

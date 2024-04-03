@@ -25,9 +25,9 @@
         ></span>
         <p class="valid-text">Nazwa drukarki musi zawierać "KON1L***"</p>
       </div>
-      <span v-if="userLoginEmptyError" class="error">Login nie może być pusty.</span>
-      <span v-if="scannerNameEmptyError" class="error">Nazwa skanera nie może być pusta.</span>
-      <span v-if="printerNameEmptyError" class="error">Nazwa drukarki nie może być pusta.</span>
+      <!-- <span v-if="userLoginEmptyError" class="error">Login nie może być pusty.</span> -->
+      <!-- <span v-if="scannerNameEmptyError" class="error">Nazwa skanera nie może być pusta.</span> -->
+      <!-- <span v-if="printerNameEmptyError" class="error">Nazwa drukarki nie może być pusta.</span> -->
 
       <div class="form-text-field" style="margin-top: 20px;">
         <input type="text" required="" autocomplete="off" maxlength="6" v-model="formData.user">
@@ -54,6 +54,8 @@ export default {
   name: 'AssignDevice',
   data() {
     return {
+      errorText: 'Źle wypełnione pola w formularzu!',
+      successText: 'Urządzenia wydane pracownikowi!',
       formData: {
         user: '',
         scanner: '',
@@ -94,8 +96,10 @@ export default {
         this.formData.printer = printerName;
         // this.$emit('returnDevices', [login,scannerName,printerName]);
         this.$emit('assignDevices', this.formData);
+        this.$emit('successAlertEvent', this.successText);
       } else {
-        alert("Musisz wypełnić wszystkie pola!")
+        this.$emit('alertEvent', this.errorText);
+        return;
       };
     }
   }
