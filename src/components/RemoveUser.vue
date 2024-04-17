@@ -12,7 +12,7 @@
         <p class="valid-text">Login musi mieć dokładnie 6 znaków (np. JANKOW)</p>
       </div>
       <div class="form-text-field" style="margin-top:20px">
-        <input type="text" maxlength="6" id="login" v-model="existingUser" required="" autocomplete="off">
+        <input type="text" maxlength="6" id="login" v-model="inputValue" required="" autocomplete="off">
         <label :style="{ color: loginValid ? 'green' : 'gray' }" for="name">Login</label>
       </div>
       <div class="form-text-field">
@@ -30,27 +30,52 @@ export default {
   data() {
     return {
       errorText: 'Źle wypełnione pola w formularzu!',
-      successText: 'Uzytkownika został usunięty!',
-      existingUser: '',
+      successAlertEvent: 'Udało się usunąć chłopa!',
+      inputValue: '',
       loginValid: false,
       adminPassowrd: '1234',
       passwordToRemoveUser: '1234',
+      isRemoved: false,
     }
   },
+  props: {
+    successAlertRemove: {
+      Type: Boolean,
+    },
+    errorAlertRemove: {
+      Type: Boolean
+    }
+
+  },
   watch: {
-    'existingUser': function (newVal) {
+    'inputValue': function (newVal) {
       this.loginValid = newVal.length === 6 && /^[a-zA-Z]+$/.test(newVal);
     },
+    'successAlertRemove': function() {
+      if(this.successAlertRemove){
+        this.showAlertInfo('successAlertEvent', 'Uzytkownika został usunięty');
+      }else{
+        return
+      }
+    },
+    'errorAlertRemove': function() {
+      if(this.errorAlertRemove){this.showAlertInfo('alertEvent', 'Uzytkownik nieistnieje!')}
+    }  
   },
   methods: {
     removeUserByLogin() {
-      if (this.existingUser && this.adminPassowrd === this.passwordToRemoveUser) {
-        this.$emit("removeUser", this.existingUser);
-        this.$emit('successAlertEvent', this.successText);
+      if (this.inputValue.length === 6 && this.adminPassowrd === this.passwordToRemoveUser) {
+        this.checkingIfUserExists(this.inputValue);
       } else { 
         this.$emit('alertEvent', this.errorText);
         return;
       }
+    },
+    checkingIfUserExists(userName) {
+      this.$emit('checkThisUserName', userName);
+    },
+    showAlertInfo(typeOfAlert,alertText){
+      this.$emit(typeOfAlert, alertText);
     }
   },
 }
