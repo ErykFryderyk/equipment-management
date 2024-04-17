@@ -61,7 +61,7 @@ export default {
         this.newUser.login = this.newUser.login.toUpperCase();
         // Emisja zdarzenia, przekazujemy newUser do komponentu rodzica
         this.$emit('updateData', this.newUser);
-        this.$emit('successAlertEvent', this.successText)
+        // this.$emit('successAlertEvent', this.successText)
         this.newUser.login = '';
         this.newUser.name = '';
       } else {
