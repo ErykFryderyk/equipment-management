@@ -9,7 +9,9 @@
       </SuccessInfo>
       <!-- Wyświetlanie odpowiedniego komponentu w zależności od aktualnego stanu -->
       <component 
-        :is="component" 
+        :is="component"
+        :successAlertRemove="successUserRemoving"
+        :errorAlertRemove="failedUserRemoving"
         @updateData="handleUpdateData" 
         @addNewScanner="handleUpdateScanner"
         @addNewPrinter="handleUpdatePrinter"
@@ -18,6 +20,7 @@
         @returnDevices="handleUpdateDevicesToReturn"
         @alertEvent="showAlert"
         @successAlertEvent="showSuccessAlert"
+        @check-this-user-name="checkThisUserName"
       />
     </div>
   </div>
@@ -57,6 +60,24 @@ export default {
     component: {
       type: String,
     },
+    successUserRemoving:{
+      type: Boolean,
+    },
+    failedUserRemoving: {
+      type: String,
+      required: true,
+    },
+    successUserAdded:{
+      type: Boolean
+    },
+  },
+  watch: {
+    successUserRemoving() {},
+    failedUserRemoving() {},
+    successUserAdded() {
+      this.showSuccessAlert('Nowy pracownik dodany do tablicy');
+      this.$emit('resetAlertStatus');
+    },
   },
   methods: {
     someEvent(event) {
@@ -64,30 +85,30 @@ export default {
 
       if (modalClass === 'overlay') {
         this.$emit('passEvent');
+        this.alertIsActive = false;
+        this.successAlertIsActive = false;
       } else {
         return;
       }
     },
     showAlert(text){
-      this.alertIsActive = true;
       this.alertText = text;
+      this.alertIsActive = true;
       setTimeout(() => {
         this.alertIsActive = false;
-        this.alertText = '';
       }, "4000");
     },
     showSuccessAlert(text) {
-      this.successAlertIsActive = true;
       this.alertText = text;
+      this.successAlertIsActive = true;
       setTimeout(() => {
         this.successAlertIsActive = false;
-        this.alertText = '';
+        this.$emit('clearData')
       }, "4000");
     },
     handleUpdateData(data) {
       // Otrzymujemy dane z AddNewUser i przekazujemy do komponentu rodzica
       this.$emit('updateData', data);
-      // this.$emit('passEvent'); // toggle modal
     },
     handleUpdateScanner(data) {
       this.$emit('updateScanner', data);
@@ -117,6 +138,9 @@ export default {
       // Ustawia aktualny komponent na ten, który ma być widoczny
       this.currentComponent = componentName;
     },
+    checkThisUserName(userName){
+      this.$emit('userToDeleted', userName);
+    }
   }
 }
 </script>
