@@ -1,8 +1,23 @@
 <template>
   <div class="app-container">
-    <Modal v-show="isModalActive" @pass-event="toggleModal" :component="currentComponent" @updateData="addUser"
-      @updateScanner="addScanner" @updatePrinter="addPrinter" @updateUsersList="handleUpdateUsers"
-      @assignDevicesToUser="assignDevices" @returnDevices="returnDevices" />
+    <Modal 
+      v-show="isModalActive" 
+      :component="currentComponent" 
+      :successUserRemoving="successRemovingAlert" 
+      :failedUserRemoving="errorRemovingAlert"
+      :successUserAdded="successAlertForModal"
+      @pass-event="toggleModal"
+      @resert-alert-status="czyszczenieStatusu"
+      @updateData="addUser"
+      @updateScanner="addScanner" 
+      @updatePrinter="addPrinter" 
+      @updateUsersList="handleUpdateUsers"
+      @assignDevicesToUser="assignDevices" 
+      @returnDevices="returnDevices" 
+      @user-to-deleted="removeUserByLogin"
+      @cleanProps="cleanAlertValue"
+      @clearData="emptyValueForRemoveUser"
+    />
     <h1>Magazyn - Zarządzanie Urządzeniami</h1>
     <!-- <div class="buttons-box">
       <button @click="toggleModal('AssignDevice')">Wydawanie urządzeń</button>
@@ -196,8 +211,8 @@
             <thead>
               <tr>
                 <th style="width:20px">Lp.</th>
-                <th>Urzadzenia</th>
                 <th>Login</th>
+                <th>Urzadzenia</th>
                 <th>Zdał</th>
                 <th>Data</th>
               </tr>
@@ -205,8 +220,8 @@
             <tbody>
               <tr v-for="(row, index) in historyTable" :key="index">
                 <td>{{ index + 1 }}</td>
-                <td>{{ row.devices }}</td>
                 <td>{{ row.login }}</td>
+                <td>{{ row.devices }}</td>
                 <td>{{ row.returned }}</td>
                 <td>{{ row.date }}</td>
               </tr>
@@ -219,6 +234,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 import DevicesList from '@/components/DevicesList.vue';
 import Modal from '@/components/Modal.vue';
 
@@ -239,8 +255,12 @@ export default {
       searchScanners: '',
       searchPrinters: '',
       searchHistory: '',
+      successAlertForModal: null,
+      successRemovingAlert: null,
+      errorRemovingAlert: null,
       hideActiveUsersList: false,
       hideDataLists: false,
+      devices: [],
 
       usersWithDevices: [
         {
@@ -372,6 +392,18 @@ export default {
       ]
     }
   },
+  mounted () {
+    axios
+      .get('https://api.coinlore.net/api/tickers/')
+      .then(response => {
+        this.info = response.data.data
+        console.log(this.info);
+
+      })
+      .catch(err => {
+        console.error(err)
+      })
+  },
   computed: {
     usersWithDevices() { return this.filterTable(this.usersWithDevices, this.searchActiveUsers); },
     users() { return this.filterTable(this.users, this.searchUsers); },
@@ -407,24 +439,32 @@ export default {
           login: data.login,
           name: data.name,
         });
+        this.successAlertForModal = true;
       } else {
         alert('Istnieje juz uzytkownik o takim loginie');
         return;
       }
     },
-    removeUserByLogin() {
+    removeUserByLogin(name) {
+      this.existingUser = name;
       const userName = this.existingUser.toUpperCase();
       const index = this.users.findIndex((u) => u.login === userName);
       const userIsWorking = this.usersWithDevices.findIndex(u => u.login === userName);
 
+
       if (userIsWorking !== -1) {
-        alert('Użytkownik nie zdał urządzeń');
+        this.errorRemovingAlertText = 'Użytkownik nie zdał urządzeń!';
       } else if (index === -1) {
-        alert('Użytkownik o podanym loginie nie istnieje');
+        this.errorRemovingAlert = 'Nie ma takiego uzytkownika!';
       } else {
         //usuwanie z tablicy userWithDevices
+        this.successRemovingAlert = true;
         this.users.splice(index, 1);
       }
+    },
+    emptyValueForRemoveUser(){
+      this.existingUser = '';
+      this.successRemovingAlert = false;
     },
     addScanner(data) {
       this.newScanner = data;
@@ -594,6 +634,13 @@ export default {
       this.isModalActive = !this.isModalActive;
       this.currentComponent = componentName;
     },
+    cleanAlertValue() {
+      this.successRemovingAlertText = '';
+      this.errorRemovingAlertText = '';
+    },
+    czyszczenieStatusu(){
+      this.successAlertForModal = null;
+    }
   }
 }
 </script>
