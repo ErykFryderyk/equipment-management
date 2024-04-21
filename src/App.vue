@@ -31,7 +31,7 @@
         </button>
         <!-- LISTA Z UŻYTKOWIKAMI KTÓRZY MAJĄ JUZ PRZYSPISANE URZĄDZENIA -->
         <h2>Aktywni Pracownicy</h2>
-        <div class="buttons-box">
+        <div class="buttons-box" v-show="!hideActiveUsersList">
           <div class="search">
             <input type="text" id="search-tabel1" v-model.trim="searchActiveUsers" required="" autocomplete="off">
             <label for="search-table1">Wyszukaj</label>
@@ -40,7 +40,7 @@
           <button @click="toggleModal('ReturnDevice')">Zwróć urządzenie</button>
         </div>
         <div>
-          <table>
+          <table v-show="!hideActiveUsersList">
             <thead>
               <tr>
                 <th style="width:20px">Lp.</th>
