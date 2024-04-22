@@ -92,7 +92,7 @@
 
         <div v-if="activeTab === 'users'">
           <h2>Pracownicy</h2>
-          <div class="search-container long-container">
+          <div class="search-container long-container" v-show="!hideDataLists">
             <div class="search">
               <input type="text" id="search-table2" v-model="searchUsers" required="" autocomplete="off">
               <label for="search-table2">Wyszukaj</label>
@@ -124,7 +124,7 @@
 
         <div v-if="activeTab === 'scanners'">
           <h2>Skanery</h2>
-          <div class="search-container">
+          <div class="search-container" v-show="!hideDataLists">
             <div class="search">
               <input type="text" required="" v-model="searchScanners" autocomplete="off">
               <label for="name">Wyszukaj</label>
@@ -135,13 +135,14 @@
             <thead>
               <tr>
                 <th style="width:20px">Lp.</th>
-                <th>Name</th>
+                <th>Nazwa</th>
                 <th>Model</th>
-                <th>Serial Number</th>
-                <th>Added</th>
+                <th>Numer Seryjny</th>
+                <th>Dodany</th>
                 <th>Gwarancja</th>
-                <th>In Use</th>
-                <th>To Delete</th>
+                <th>W uzyciu</th>
+                <th>Serwis IT</th>
+                <th>Opcje</th>
               </tr>
             </thead>
             <tbody>
@@ -153,6 +154,7 @@
                 <td>{{ scanner.date }}</td>
                 <td>{{ scanner.warranty ? "Tak" : "Nie" }}</td>
                 <td>{{ scanner.isInUse ? "Tak" : "Nie" }}</td>
+                <td>{{ scanner.service ? "Tak" : "Nie" }}</td>
                 <td>
                   <button class="small-btn" @click="deleteScanner(scanner.scannerID)">Delete</button>
                 </td>
@@ -163,7 +165,7 @@
 
         <div v-if="activeTab === 'printers'">
           <h2>Drukarki</h2>
-          <div class="search-container">
+          <div class="search-container" v-show="!hideDataLists">
             <div class="search">
               <input type="text" required="" v-model="searchPrinters" autocomplete="off">
               <label for="name">Wyszukaj</label>
@@ -174,13 +176,14 @@
             <thead>
               <tr>
                 <th style="width:20px">Lp.</th>
-                <th>Name</th>
+                <th>Nazwa</th>
                 <th>Model</th>
-                <th>Serial Number</th>
-                <th>Added</th>
+                <th>Numer Seryjny</th>
+                <th>Dodany</th>
                 <th>Gwarancja</th>
-                <th>In Use</th>
-                <th>To Delete</th>
+                <th>W uzyciu</th>
+                <th>Serwis IT</th>
+                <th>Opcje</th>
               </tr>
             </thead>
             <tbody>
@@ -191,6 +194,7 @@
                 <td>{{ printer.serialNumber }}</td>
                 <td>{{ printer.date }}</td>
                 <td>{{ printer.warranty ? "Tak" : "Nie" }}</td>
+                <td>{{ printer.service ? "Tak" : "Nie" }}</td>
                 <td>{{ printer.isInUse ? "Tak" : "Nie" }}</td>
                 <td>
                   <button class="small-btn" @click="deletePrinter(printer.printerID)">Delete</button>
@@ -201,7 +205,7 @@
         </div>
         <div v-if="activeTab === 'history'">
           <h2>Historia</h2>
-          <div class="search-container long-container">
+          <div class="search-container long-container" v-show="!hideDataLists">
             <div class="search">
               <input type="text" id="search-table2" v-model="searchHistory" required="" autocomplete="off">
               <label for="search-table2">Wyszukaj</label>
@@ -213,7 +217,7 @@
                 <th style="width:20px">Lp.</th>
                 <th>Login</th>
                 <th>Urzadzenia</th>
-                <th>Zdał</th>
+                <th>W uzyciu</th>
                 <th>Data</th>
               </tr>
             </thead>
@@ -222,7 +226,7 @@
                 <td>{{ index + 1 }}</td>
                 <td>{{ row.login }}</td>
                 <td>{{ row.devices }}</td>
-                <td>{{ row.returned }}</td>
+                <td>{{ row.returned ? "Nie" : "Tak"}}</td>
                 <td>{{ row.date }}</td>
               </tr>
             </tbody>
@@ -276,20 +280,7 @@ export default {
           date: '10-10-2024 07:30',
         }
       ],
-      historyTable: [
-        {
-          login: 'MARKOS',
-          devices: 'KON1S069, KON1L069',
-          returned: true,
-          date: '10-10-2024 07:50',
-        },
-        {
-          login: 'PAWELE',
-          devices: 'KON1S069, KON1L069',
-          returned: true,
-          date: '10-10-2024 07:50',
-        },
-      ],
+      
       //Data to add/remove 
       newUser: {
         login: null,
@@ -338,6 +329,7 @@ export default {
           scannerName: 'KON1S001',
           isInUse: true,
           warranty: true,
+          serviceIT: false,
           model: 'TC52',
           serialNumber: 'S129281239123',
           date: '10-10-2023',
@@ -347,6 +339,7 @@ export default {
           scannerName: 'KON1S002',
           isInUse: false,
           warranty: true,
+          serviceIT: false,
           model: 'TC52',
           serialNumber: 'S129281239123',
           date: '10-10-2023',
@@ -356,6 +349,7 @@ export default {
           scannerName: 'KON1S069',
           isInUse: true,
           warranty: true,
+          serviceIT: false,
           model: 'TC52',
           serialNumber: 'S129281239123',
           date: '10-10-2023',
@@ -367,6 +361,7 @@ export default {
           printerName: 'KON1L001',
           isInUse: true,
           warranty: true,
+          serviceIT: false,
           model: 'QLn620',
           serialNumber: 'XXX123123123',
           date: '10-10-2023',
@@ -376,6 +371,7 @@ export default {
           printerName: 'KON1L002',
           isInUse: false,
           warranty: true,
+          serviceIT: false,
           model: 'QLn620',
           serialNumber: 'XXX123123123',
           date: '10-10-2023',
@@ -385,11 +381,26 @@ export default {
           printerName: 'KON1L069',
           isInUse: true,
           warranty: true,
+          serviceIT: false,
           model: 'QLn620',
           serialNumber: 'XXX123123123',
           date: '10-10-2023',
         },
-      ]
+      ],
+      historyTable: [
+        {
+          login: 'MARKOS',
+          devices: 'KON1S069, KON1L069',
+          returned: true,
+          date: '10-10-2024 07:50',
+        },
+        {
+          login: 'PAWELE',
+          devices: 'KON1S069, KON1L069',
+          returned: true,
+          date: '10-10-2024 07:50',
+        },
+      ],
     }
   },
   mounted () {
@@ -784,7 +795,7 @@ h1 {
 
 .hide-active-users-list,
 .hide-data-lists {
-  max-height: 65px;
+  max-height: 80px;
   overflow: hidden;
 }
 
