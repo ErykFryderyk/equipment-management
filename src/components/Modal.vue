@@ -64,20 +64,35 @@ export default {
       type: Boolean,
     },
     failedUserRemoving: {
+      required: true,
+    },
+    // successUserAdded:{
+      // type: Boolean
+    // },
+    successAlert: {
       type: String,
       required: true,
     },
-    successUserAdded:{
-      type: Boolean
-    },
+    errorAlert: {
+      type: String,
+      required: true,
+    }
   },
   watch: {
-    successUserRemoving() {},
-    failedUserRemoving() {},
-    successUserAdded() {
-      this.showSuccessAlert('Nowy pracownik dodany do tablicy');
+    successAlert(text) {
+      this.showSuccessAlert(text);
       this.$emit('resetAlertStatus');
     },
+    errorAlert(text) {
+      this.showAlert(text);
+      this.$emit('resetAlertStatus');
+    },
+    successUserRemoving() {},
+    failedUserRemoving() {},
+    // successUserAdded() {
+      // this.showSuccessAlert('Nowy pracownik dodany do tablicy');
+      // this.$emit('resetAlertStatus');
+    // },
   },
   methods: {
     someEvent(event) {
@@ -96,6 +111,7 @@ export default {
       this.alertIsActive = true;
       setTimeout(() => {
         this.alertIsActive = false;
+        // this.$emit('clearData');
       }, "4000");
     },
     showSuccessAlert(text) {
