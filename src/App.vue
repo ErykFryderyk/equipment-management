@@ -3,9 +3,8 @@
     <Modal 
       v-show="isModalActive" 
       :component="currentComponent" 
-      :successUserRemoving="successRemovingAlert" 
-      :failedUserRemoving="errorRemovingAlert"
-      :successUserAdded="successAlertForModal"
+      :successAlert="successModalAlert"
+      :errorAlert="errorModalAlert"
       @pass-event="toggleModal"
       @resert-alert-status="czyszczenieStatusu"
       @updateData="addUser"
@@ -259,9 +258,11 @@ export default {
       searchScanners: '',
       searchPrinters: '',
       searchHistory: '',
-      successAlertForModal: null,
-      successRemovingAlert: null,
-      errorRemovingAlert: null,
+      // successAlertForModal: null,
+      // successRemovingAlert: null,
+      errorModalAlert: '',
+      successModalAlert: '',
+      // errorRemovingAlert: null,
       hideActiveUsersList: false,
       hideDataLists: false,
       devices: [],
@@ -390,13 +391,13 @@ export default {
       historyTable: [
         {
           login: 'MARKOS',
-          devices: 'KON1S069, KON1L069',
+          devices: 'KON1S070, KON1L071',
           returned: true,
           date: '10-10-2024 07:50',
         },
         {
           login: 'PAWELE',
-          devices: 'KON1S069, KON1L069',
+          devices: 'KON1S090, KON1L091',
           returned: true,
           date: '10-10-2024 07:50',
         },
@@ -431,6 +432,7 @@ export default {
         )
       );
     },
+
     handleUpdateUsers(data) {
       // Obsługa zdarzenia updateUsers z Modal, odbieramy dane
       this.existingUser = data;
@@ -450,12 +452,13 @@ export default {
           login: data.login,
           name: data.name,
         });
-        this.successAlertForModal = true;
+        this.successModalAlert = 'Nowy uzytkownik dodany!';
       } else {
-        alert('Istnieje juz uzytkownik o takim loginie');
+        this.errorModalAlert = 'Taki uzytkownik juz istnieje!';
         return;
       }
     },
+
     removeUserByLogin(name) {
       this.existingUser = name;
       const userName = this.existingUser.toUpperCase();
@@ -464,19 +467,22 @@ export default {
 
 
       if (userIsWorking !== -1) {
-        this.errorRemovingAlertText = 'Użytkownik nie zdał urządzeń!';
+        this.errorModalAlert = 'Użytkownik nie zdał jeszcze urządzeń!';
       } else if (index === -1) {
-        this.errorRemovingAlert = 'Nie ma takiego uzytkownika!';
+        this.errorModalAlert = 'Nie ma takiego uzytkownika!';
       } else {
         //usuwanie z tablicy userWithDevices
-        this.successRemovingAlert = true;
+        // this.successRemovingAlert = true;
+        this.successModalAlert = 'Uzytkownik został usunięty!'
         this.users.splice(index, 1);
       }
     },
+
     emptyValueForRemoveUser(){
       this.existingUser = '';
       this.successRemovingAlert = false;
     },
+
     addScanner(data) {
       this.newScanner = data;
       const index = this.scanners.findIndex((elName) => elName.scannerName === this.newScanner.scannerName.toUpperCase());
@@ -490,6 +496,8 @@ export default {
         alert("Wybierz model skanera")
       } else if (index !== -1) {
         alert("Taki skaner juz istnieje!");
+        this.errorAlert = 'Taki skaner juz istnieje!'; 
+        return;
       } else {
         // Dodajwanie skanera do tablicy
         this.scanners.push({
@@ -500,12 +508,15 @@ export default {
           serialNumber: this.newScanner.serialNumber,
           date: `${String(new Date().getDate()).padStart(2, '0')}-${String(new Date().getMonth() + 1).padStart(2, '0')}-${new Date().getFullYear()}`,
         });
+        this.successModalAlert = 'Skaner został dodany!';
+
         // Resetowanie danych z formularza
         this.newScanner.scannerName = '';
         this.newScanner.model = '';
         this.newScanner.serialNumber = '';
       }
     },
+
     deleteScanner(scannerID) {
       if (confirm("Are you sure?")) {
         // Find the index of the scanner with the given ID
@@ -519,6 +530,7 @@ export default {
         }
       }
     },
+
     addPrinter(data) {
       this.newPrinter = data;
       const index = this.printers.findIndex((elName) => elName.printerName === this.newPrinter.printerName.toUpperCase());
@@ -548,6 +560,7 @@ export default {
         this.newPrinter.serialNumber = '';
       }
     },
+
     deletePrinter(printerID) {
       if (confirm("Are you sure?")) {
         // Find the index of the printer with the given ID
@@ -561,6 +574,7 @@ export default {
         }
       }
     },
+
     assignDevices(data) {
       const user = this.users.find(u => u.login === data.user);
       const scanner = this.scanners.find(u => u.scannerName === data.scanner);
@@ -616,6 +630,7 @@ export default {
       this.selectedScanner = '';
       this.selectedPrinter = '';
     },
+
     returnDevices(data) {
       // Znajdź indeks użytkownika w tablicy usersWithDevices
       const userIndex = this.usersWithDevices.findIndex((u) => u.login === data[0]);
@@ -640,15 +655,18 @@ export default {
         alert('Użytkownik nie istnieje w tablicy.');
       }
     },
+
     //aktywowanie/dezaktywacja modal z odpowiednią zawartością
     toggleModal(componentName) {
       this.isModalActive = !this.isModalActive;
       this.currentComponent = componentName;
     },
+
     cleanAlertValue() {
       this.successRemovingAlertText = '';
       this.errorRemovingAlertText = '';
     },
+
     czyszczenieStatusu(){
       this.successAlertForModal = null;
     }
