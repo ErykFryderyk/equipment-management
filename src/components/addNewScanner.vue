@@ -82,7 +82,6 @@ export default {
       // Walidacja przed zwróceniem urządzeń
       if(this.nameValid && this.modelValid && this.serialValid) {
         this.$emit('addNewScanner', this.scanner);
-        this.$emit('successAlertEvent', this.successText);
       } else{
         this.$emit('alertEvent', this.errorText);
         return;
