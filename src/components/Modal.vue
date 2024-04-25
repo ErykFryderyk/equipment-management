@@ -13,10 +13,10 @@
         :successAlertRemove="successUserRemoving"
         :errorAlertRemove="failedUserRemoving"
         @updateData="handleUpdateData" 
-        @addNewScanner="handleUpdateScanner"
+        @add-new-scanner="handleUpdateScanner"
         @addNewPrinter="handleUpdatePrinter"
         @removeUser="handleUpdateUsers"
-        @assignDevices="handleUpdateDevicesToAssign"
+        @assign-devices="handleUpdateDevicesToAssign"
         @returnDevices="handleUpdateDevicesToReturn"
         @alertEvent="showAlert"
         @successAlertEvent="showSuccessAlert"
@@ -80,12 +80,16 @@ export default {
   },
   watch: {
     successAlert(text) {
-      this.showSuccessAlert(text);
-      this.$emit('resetAlertStatus');
+      if(text) {
+        this.showSuccessAlert(text);
+        this.$emit('resetAlertStatus');
+      }
     },
     errorAlert(text) {
-      this.showAlert(text);
-      this.$emit('resetAlertStatus');
+      if(text) {
+        this.showAlert(text);
+        this.$emit('resetAlertStatus');
+      }
     },
     successUserRemoving() {},
     failedUserRemoving() {},
@@ -111,7 +115,7 @@ export default {
       this.alertIsActive = true;
       setTimeout(() => {
         this.alertIsActive = false;
-        // this.$emit('clearData');
+        this.$emit('clearData');
       }, "4000");
     },
     showSuccessAlert(text) {

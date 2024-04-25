@@ -11,11 +11,11 @@
       @updateScanner="addScanner" 
       @updatePrinter="addPrinter" 
       @updateUsersList="handleUpdateUsers"
-      @assignDevicesToUser="assignDevices" 
+      @assign-devices-to-user="assignDevices" 
       @returnDevices="returnDevices" 
       @user-to-deleted="removeUserByLogin"
       @cleanProps="cleanAlertValue"
-      @clearData="emptyValueForRemoveUser"
+      @clear-data="emptyValueForRemoveUser"
     />
     <h1>Magazyn - Zarządzanie Urządzeniami</h1>
     <!-- <div class="buttons-box">
@@ -481,6 +481,8 @@ export default {
     emptyValueForRemoveUser(){
       this.existingUser = '';
       this.successRemovingAlert = false;
+      this.successModalAlert = '';
+      this.errorModalAlert = '';
     },
 
     addScanner(data) {
@@ -581,28 +583,29 @@ export default {
       const printer = this.printers.find(u => u.printerName === data.printer);
 
       if (!user) {
-        alert('Użytkownik nie istnieje');
+        // alert('Użytkownik nie istnieje');
+        this.errorModalAlert = "Użytkownik nie istnieje!";
         return;
       }
 
       const userWithDevices = this.usersWithDevices.find(u => u.login === data.user);
       if (userWithDevices) {
-        alert('Użytkownik posiada już urządzenia');
+        this.errorModalAlert = 'Użytkownik posiada już urządzenia';
         return;
       }
 
       if (!scanner) {
-        alert('Skaner nie istnieje');
+        this.errorModalAlert = "Taki skaner nie istnieje!";
         return;
       }
 
       if (!printer) {
-        alert('Drukarka nie istnieje');
+        this.errorModalAlert = "Taka drukarka nie istnieje!";
         return;
       }
 
       if (scanner.isInUse || printer.isInUse) {
-        alert('Urządzenia są w użyciu');
+        this.errorModalAlert = "Urządzenia są juz w uzyciu!";
         return;
       }
 
@@ -620,9 +623,7 @@ export default {
 
       // Dodanie użytkownika do tablicy
       this.usersWithDevices.push(newUser);
-
-      // przekazywanie propsa do czyszczenia inputów
-      // TO DO 
+      this.successModalAlert = "Urządzenia wydane pracownikowi!";
 
 
       // Zresetowanie pól formularza
@@ -669,6 +670,7 @@ export default {
 
     czyszczenieStatusu(){
       this.successAlertForModal = null;
+      this.errorModalAlert = '';
     }
   }
 }

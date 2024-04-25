@@ -55,7 +55,6 @@ export default {
   data() {
     return {
       errorText: 'Źle wypełnione pola w formularzu!',
-      successText: 'Urządzenia wydane pracownikowi!',
       formData: {
         user: '',
         scanner: '',
@@ -96,7 +95,7 @@ export default {
         this.formData.printer = printerName;
         // this.$emit('returnDevices', [login,scannerName,printerName]);
         this.$emit('assignDevices', this.formData);
-        this.$emit('successAlertEvent', this.successText);
+        // this.$emit('successAlertEvent', this.successText);
       } else {
         this.$emit('alertEvent', this.errorText);
         return;
