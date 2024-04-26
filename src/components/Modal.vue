@@ -10,8 +10,6 @@
       <!-- Wyświetlanie odpowiedniego komponentu w zależności od aktualnego stanu -->
       <component 
         :is="component"
-        :successAlertRemove="successUserRemoving"
-        :errorAlertRemove="failedUserRemoving"
         @updateData="handleUpdateData" 
         @add-new-scanner="handleUpdateScanner"
         @addNewPrinter="handleUpdatePrinter"
@@ -60,12 +58,12 @@ export default {
     component: {
       type: String,
     },
-    successUserRemoving:{
-      type: Boolean,
-    },
-    failedUserRemoving: {
-      required: true,
-    },
+    // successUserRemoving:{
+      // type: Boolean,
+    // },
+    // failedUserRemoving: {
+      // required: true,
+    // },
     // successUserAdded:{
       // type: Boolean
     // },
@@ -91,8 +89,8 @@ export default {
         this.$emit('resetAlertStatus');
       }
     },
-    successUserRemoving() {},
-    failedUserRemoving() {},
+    // successUserRemoving() {},
+    // failedUserRemoving() {},
     // successUserAdded() {
       // this.showSuccessAlert('Nowy pracownik dodany do tablicy');
       // this.$emit('resetAlertStatus');
