@@ -30,7 +30,7 @@ export default {
   data() {
     return {
       errorText: 'Źle wypełnione pola w formularzu!',
-      successAlertEvent: 'Udało się usunąć chłopa!',
+      // successAlertEvent: 'Udało się usunąć chłopa!',
       inputValue: '',
       loginValid: false,
       adminPassowrd: '1234',
@@ -39,28 +39,27 @@ export default {
     }
   },
   props: {
-    successAlertRemove: {
-      Type: Boolean,
-    },
-    errorAlertRemove: {
-      Type: Boolean
-    }
-
+    // successAlertRemove: {
+    //   Type: Boolean,
+    // },
+    // errorAlertRemove: {
+      // Type: Boolean
+    // }
   },
   watch: {
     'inputValue': function (newVal) {
       this.loginValid = newVal.length === 6 && /^[a-zA-Z]+$/.test(newVal);
     },
-    'successAlertRemove': function() {
-      if(this.successAlertRemove){
-        this.showAlertInfo('successAlertEvent', 'Uzytkownika został usunięty');
-      }else{
-        return
-      }
-    },
-    'errorAlertRemove': function() {
-      if(this.errorAlertRemove){this.showAlertInfo('alertEvent', 'Uzytkownik nieistnieje!')}
-    }  
+    // 'successAlertRemove': function() {
+    //   if(this.successAlertRemove){
+    //     this.showAlertInfo('successAlertEvent', 'Uzytkownika zoadsasdstał usunięty');
+    //   }else{
+    //     return
+    //   }
+    // },
+    // 'errorAlertRemove': function() {
+    //   if(this.errorAlertRemove){this.showAlertInfo('alertEvent', 'Uzytkownik nieistnieje!')}
+    // }  
   },
   methods: {
     removeUserByLogin() {
