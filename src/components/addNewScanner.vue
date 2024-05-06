@@ -79,8 +79,9 @@ export default {
   },
   methods: {
     addScanner() {
-      // Walidacja przed zwróceniem urządzeń
+      // Walidacja przed wydaniem urządzeń
       if(this.nameValid && this.modelValid && this.serialValid) {
+        this.scanner.scannerName = this.scanner.scannerName.toUpperCase();
         this.$emit('addNewScanner', this.scanner);
       } else{
         this.$emit('alertEvent', this.errorText);
