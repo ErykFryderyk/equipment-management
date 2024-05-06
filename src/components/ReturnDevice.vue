@@ -7,37 +7,36 @@
       <div style="display: flex; align-items: center;">
         <span
           class="correct" 
-          :class="{ 'correct--active': userLoginError }"
+          :class="{ 'correct--active': userValid }"
         ></span>
         <p class="valid-text">Login musi zawierać 6 znaków</p>
       </div>
       <div style="display: flex; align-items: center;">
         <span
           class="correct" 
-          :class="{ 'correct--active': scannerNameError }"
+          :class="{ 'correct--active': scannerValid }"
         ></span>
         <p class="valid-text">Nazwa skanera musi zawierać "KON1S***"</p>
       </div>
       <div style="display: flex; align-items: center;">
         <span
           class="correct" 
-          :class="{ 'correct--active': printerNameError }"
+          :class="{ 'correct--active': printerValid }"
         ></span>
         <p class="valid-text">Nazwa drukarki musi zawierać "KON1L***"</p>
       </div>
 
-
       <div class="form-text-field" style="margin-top:20px;">
-        <input type="text" maxlength="6" v-model="formData.userLogin" required="" autocomplete="off">
-        <label for="name" :style="{color: userLoginError ? 'green' : 'gray'}">Login Pracownika</label>
+        <input type="text" maxlength="6" v-model="formData.user" required="" autocomplete="off">
+        <label for="name" :style="{color: userValid ? 'green' : 'gray'}">Login Pracownika</label>
       </div>
       <div class="form-text-field">
-        <input type="text" maxlength="8" v-model="formData.selectedScanner" required="" autocomplete="off">
-        <label for="name" :style="{color: scannerNameError ? 'green' : 'gray'}">Nazwa Skanera</label>
+        <input type="text" maxlength="8" v-model="formData.scanner" required="" autocomplete="off">
+        <label for="name" :style="{color: scannerValid ? 'green' : 'gray'}">Nazwa Skanera</label>
       </div>
       <div class="form-text-field">
-        <input type="text" maxlength="8" v-model="formData.selectedPrinter" required="" autocomplete="off">
-        <label for="name" :style="{color: printerNameError ? 'green' : 'gray'}">Nazwa Drukarki</label>
+        <input type="text" maxlength="8" v-model="formData.printer" required="" autocomplete="off">
+        <label for="name" :style="{color: printerValid ? 'green' : 'gray'}">Nazwa Drukarki</label>
       </div>
       <button type="submit">Zwróć urządzenia</button>
     </form>
@@ -60,42 +59,36 @@ export default {
       errorText: 'Źle wypełnione pola w formularzu!',
       successText: 'Urządzenia zostały zwrócone!',
       formData: {
-        userLogin: '',
-        selectedScanner: '',
-        selectedPrinter: '',
+        user: '',
+        scanner: '',
+        printer: '',
       },
 
-      userLoginError: false,
-      scannerNameError: false,
-      printerNameError: false,
+      userValid: false,
+      printerValid: false,
+      scannerValid: false,
     }
   },  
   watch: {
-    'formData.userLogin': function (newVal) {
-      this.userLoginError = newVal.length === 6 && /^[a-zA-Z]+$/.test(newVal);
+    'formData.user': function (newVal) {
+      this.userValid = newVal.length === 6 && /^[a-zA-Z]+$/.test(newVal);
     },
-    'formData.selectedScanner': function (newVal) {
-      this.scannerNameError = newVal.length === 8 && newVal.toUpperCase().includes('KON1S');
+    'formData.scanner': function (newVal) {
+      this.scannerValid = newVal.length === 8 && newVal.toUpperCase().includes('KON1S');
     },
-    'formData.selectedPrinter': function (newVal) {
-      this.printerNameError = newVal.length === 8 && newVal.toUpperCase().includes('KON1L');
+    'formData.printer': function (newVal) {
+      this.printerValid = newVal.length === 8 && newVal.toUpperCase().includes('KON1L');
     },
   },
   methods: {
     returnDevices() {
-      const login = this.formData.userLogin.toUpperCase();
-      const scannerName = this.formData.selectedScanner.toUpperCase();
-      const printerName = this.formData.selectedPrinter.toUpperCase();
-
-      // Walidacja przed zwróceniem urządzeń
-      this.userLoginError = login.length == 6;
-      this.scannerNameError = scannerName.includes('KON1S') && scannerName.length === 8;
-      this.printerNameError = printerName.includes('KON1L') && printerName.length === 8;
-
       // Walidacja formularza
       // Sprawdzenie, czy wszystkie warunki walidacji są spełnione...
-      if (this.userLoginError && this.scannerNameError && this.printerNameError) {
-        this.$emit('returnDevices', [login,scannerName,printerName]);
+      if (this.userValid && this.scannerValid && this.printerValid) {
+        this.formData.user = this.formData.user.toUpperCase();
+        this.formData.scanner = this.formData.scanner.toUpperCase();
+        this.formData.printer = this.formData.printer.toUpperCase();
+        this.$emit('returnDevices', this.formData);
         this.$emit('successAlertEvent', this.successText);
       } else {
         this.$emit('alertEvent', this.errorText);

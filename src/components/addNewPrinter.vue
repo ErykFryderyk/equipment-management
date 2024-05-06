@@ -24,10 +24,6 @@
         ></span>
         <p class="valid-text">Numer seryjny musi zawierać min. 12 znaków</p>
       </div>
-      <!-- <div> -->
-        <!-- <label for="printerName" :style="{ color: nameValid ? 'green' : 'red' }">Printer Name:</label>
-        <input type="text" id="printerName" placeholder="KON1L001" v-model="printer.printerName" />
-      </div> -->
 
       <div class="form-text-field" style="margin-top: 20px">
         <input type="text" maxlength="8" v-model="printer.printerName" required="" autocomplete="off">
@@ -43,10 +39,6 @@
           <option value="ZQ630">ZQ630</option>
         </select>
       </div>
-      <!-- <div>
-        <label for="printerSerialNumber" :style="{ color: serialValid ? 'green' : 'red' }">Serial Number:</label>
-        <input type="text" id="printerSerialNumber" placeholder="S1203120312031" v-model="printer.serialNumber" />
-      </div> -->
 
       <div class="form-text-field">
         <input type="text" v-model="printer.serialNumber" required="" autocomplete="off">
@@ -64,7 +56,7 @@ export default {
   data() {
     return {
       errorText: 'Źle wypełnione pola w formularzu!',
-      successText: 'Nowa drukarka został dodany!',
+      successText: 'Nowa drukarka została dodana!',
       printer: {
         printerName: 'KON1L',
         model: '',
@@ -90,8 +82,8 @@ export default {
     addPrinter() {
       // Walidacja przed zwróceniem urządzeń
       if(this.nameValid && this.modelValid && this.serialValid) {
+        this.printer.printerName = this.printer.printerName.toUpperCase();
         this.$emit('addNewPrinter', this.printer);
-        this.$emit('successAlertEvent', this.successText);
       } else{
         this.$emit('alertEvent', this.errorText);
         return;

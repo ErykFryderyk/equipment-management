@@ -7,39 +7,36 @@
       <div style="display: flex; align-items: center;">
         <span
           class="correct" 
-          :class="{ 'correct--active': userLoginError }"
+          :class="{ 'correct--active': userValid }"
         ></span>
         <p class="valid-text">Login musi zawierać 6 znaków</p>
       </div>
       <div style="display: flex; align-items: center;">
         <span
           class="correct" 
-          :class="{ 'correct--active': scannerNameError }"
+          :class="{ 'correct--active': scannerValid }"
         ></span>
         <p class="valid-text">Nazwa skanera musi zawierać "KON1S***"</p>
       </div>
       <div style="display: flex; align-items: center;">
         <span
           class="correct" 
-          :class="{ 'correct--active': printerNameError }"
+          :class="{ 'correct--active': printerValid }"
         ></span>
         <p class="valid-text">Nazwa drukarki musi zawierać "KON1L***"</p>
       </div>
-      <!-- <span v-if="userLoginEmptyError" class="error">Login nie może być pusty.</span> -->
-      <!-- <span v-if="scannerNameEmptyError" class="error">Nazwa skanera nie może być pusta.</span> -->
-      <!-- <span v-if="printerNameEmptyError" class="error">Nazwa drukarki nie może być pusta.</span> -->
 
       <div class="form-text-field" style="margin-top: 20px;">
         <input type="text" required="" autocomplete="off" maxlength="6" v-model="formData.user">
-        <label for="name" :style="{color: userLoginError ? 'green' : 'gray'}">Login Pracownika</label>
+        <label for="name" :style="{color: userValid ? 'green' : 'gray'}">Login Pracownika</label>
       </div>
       <div class="form-text-field">
         <input type="text" required="" autocomplete="off" maxlength="8" v-model="formData.scanner">
-        <label for="name" :style="{color: scannerNameError ? 'green' : 'gray'}">Nazwa Skanera</label>
+        <label for="name" :style="{color: scannerValid ? 'green' : 'gray'}">Nazwa Skanera</label>
       </div>
       <div class="form-text-field">
         <input type="text" required="" autocomplete="off" maxlength="8" v-model="formData.printer">
-        <label for="name" :style="{color: printerNameError ? 'green' : 'gray'}">Nazwa Drukarki</label>
+        <label for="name" :style="{color: printerValid ? 'green' : 'gray'}">Nazwa Drukarki</label>
       </div>
       <button type="submit">Przydziel urządzenie</button>
     </form>
@@ -60,40 +57,29 @@ export default {
         scanner: '',
         printer: '',
       },
-      userLoginError: null,
-      scannerNameError: null,
-      printerNameError: null,
+      userValid: false,
+      scannerValid: false,
+      printerValid: false,
     }
   },
   watch: {
     'formData.user': function (newVal) {
-      this.userLoginError = newVal.length === 6 && /^[a-zA-Z]+$/.test(newVal);
+      this.userValid = newVal.length === 6 && /^[a-zA-Z]+$/.test(newVal);
     },
     'formData.scanner': function (newVal) {
-      this.scannerNameError = newVal.length === 8 && newVal.toUpperCase().includes('KON1S');
+      this.scannerValid = newVal.length === 8 && newVal.toUpperCase().includes('KON1S');
     },
     'formData.printer': function (newVal) {
-      this.printerNameError = newVal.length === 8 && newVal.toUpperCase().includes('KON1L');
+      this.printerValid = newVal.length === 8 && newVal.toUpperCase().includes('KON1L');
     },
   },
   methods: {
     assignDevices() {
-      const login = this.formData.user.toUpperCase();
-      const scannerName = this.formData.scanner.toUpperCase();
-      const printerName = this.formData.printer.toUpperCase();
-
-      // Walidacja przed zwróceniem urządzeń
-      this.userLoginError = login.length === 6;
-      this.scannerNameError = scannerName.includes('KON1S') && scannerName.length === 8;
-      this.printerNameError = printerName.includes('KON1L') && printerName.length === 8;
-
-      // Walidacja formularza
-      // Sprawdzenie, czy wszystkie warunki walidacji są spełnione...
-      if (this.userLoginError && this.scannerNameError && this.printerNameError) {
-        this.formData.user = login;
-        this.formData.scanner = scannerName;
-        this.formData.printer = printerName;
-        // this.$emit('returnDevices', [login,scannerName,printerName]);
+      
+      if (this.userValid && this.scannerValid && this.printerValid) {
+        this.formData.user = this.formData.user.toUpperCase();
+        this.formData.scanner = this.formData.scanner.toUpperCase();
+        this.formData.printer = this.formData.printer.toUpperCase();
         this.$emit('assignDevices', this.formData);
         // this.$emit('successAlertEvent', this.successText);
       } else {
