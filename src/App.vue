@@ -8,11 +8,11 @@
       @pass-event="toggleModal"
       @resert-alert-status="czyszczenieStatusu"
       @updateData="addUser"
-      @updateScanner="addScanner" 
-      @updatePrinter="addPrinter" 
+      @update-scanner="addScanner" 
+      @update-printer="addPrinter" 
       @updateUsersList="handleUpdateUsers"
       @assign-devices-to-user="assignDevices" 
-      @returnDevices="returnDevices" 
+      @return-devices="returnDevices" 
       @user-to-deleted="removeUserByLogin"
       @cleanProps="cleanAlertValue"
       @clear-data="emptyValueForRemoveUser"
@@ -487,7 +487,7 @@ export default {
 
     addScanner(data) {
       this.newScanner = data;
-      const index = this.scanners.findIndex((elName) => elName.scannerName === this.newScanner.scannerName.toUpperCase());
+      const index = this.scanners.findIndex((elName) => elName.scannerName === this.newScanner.scannerName);
 
       // Generowanie unikalnego userID
       const maxID = Math.max(...this.scanners.map(el => el.scannerID));
@@ -495,10 +495,11 @@ export default {
 
       // Walidacja formularza
       if (this.newScanner.model === '') {
-        alert("Wybierz model skanera")
+        // alert("Wybierz model skanera")
+        this.errorModalAlert = 'Pole MODEL jest wymagane!';
       } else if (index !== -1) {
-        alert("Taki skaner juz istnieje!");
-        this.errorAlert = 'Taki skaner juz istnieje!'; 
+        // alert("Taki skaner juz istnieje!");
+        this.errorModalAlert = 'Taki skaner juz istnieje!';
         return;
       } else {
         // Dodajwanie skanera do tablicy
@@ -510,7 +511,7 @@ export default {
           serialNumber: this.newScanner.serialNumber,
           date: `${String(new Date().getDate()).padStart(2, '0')}-${String(new Date().getMonth() + 1).padStart(2, '0')}-${new Date().getFullYear()}`,
         });
-        this.successModalAlert = 'Skaner został dodany!';
+        this.successModalAlert = 'Nowy skaner został dodany!';
 
         // Resetowanie danych z formularza
         this.newScanner.scannerName = '';
@@ -543,9 +544,12 @@ export default {
 
       //Walidacja formuarza
       if (this.newPrinter.model === '') {
-        alert("Wybierz model drukarki")
+        // alert("Wybierz model drukarki")
+        this.errorModalAlert = 'Pole MODEL jest wymagane!';
+        ti
       } else if (index !== -1) {
-        alert("Taka drukarka juz istnieje!");
+        // alert("Taka drukarka juz istnieje!");
+        this.errorModalAlert = 'Taka drukarka juz istnieje!!';
       } else {
         // Dodawanie obiektu do tablicy
         this.printers.push({
@@ -556,6 +560,8 @@ export default {
           serialNumber: this.newPrinter.serialNumber,
           date: `${String(new Date().getDate()).padStart(2, '0')}-${String(new Date().getMonth() + 1).padStart(2, '0')}-${new Date().getFullYear()}`,
         });
+        this.successModalAlert = 'Nowa drukarka została dodana!';
+
         // Resetowanie danych z formularza
         this.newPrinter.printerName = '';
         this.newPrinter.model = '';
@@ -633,10 +639,11 @@ export default {
     },
 
     returnDevices(data) {
+      console.log(data);
       // Znajdź indeks użytkownika w tablicy usersWithDevices
-      const userIndex = this.usersWithDevices.findIndex((u) => u.login === data[0]);
-      const scanner = data[1];
-      const printer = data[2];
+      const userIndex = this.usersWithDevices.findIndex((u) => u.login === data.user);
+      const scanner = data.scanner;
+      const printer = data.printer;
 
       // Sprawdzanie czy istnieje uzytkownik o podanym loginie w tablicy
       if (userIndex !== -1) {
@@ -650,10 +657,12 @@ export default {
           this.scanners.find(s => s.scannerName === scanner).isInUse = false;
           this.printers.find(p => p.printerName === printer).isInUse = false;
         } else {
-          alert('Te urzadzenia nie są przypisane do tego uzytkownia')
+          // alert('Te urzadzenia nie są przypisane do tego uzytkownia')
+          this.errorModalAlert = "Urządzenia są juz w uzyciu!";        
         }
       } else {
-        alert('Użytkownik nie istnieje w tablicy.');
+        // alert('Użytkownik nie istnieje w tablicy.');
+        this.errorModalAlert = "Taki uzytkownik nie ustnieje!";
       }
     },
 
@@ -731,6 +740,7 @@ button {
   position: absolute;
   right: 15px;
   top: 10px;
+  min-width: 30px;
 }
 
 input {
